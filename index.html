@@ -6,391 +6,674 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Fazenda Feliz</title>
 <style>
-:root{
- --green:#527d3b;--dark:#35572d;--cream:#fff4d9;
- --gold:#e7bd68;--brown:#80552f;
+:root {
+  --green:#557d3e;
+  --deep:#34532e;
+  --gold:#e6bd70;
+  --cream:#fff3d7;
+  --brown:#79512f;
 }
 *{box-sizing:border-box}
-body{margin:0;background:#e8dfc9;color:#493923;font-family:Georgia,serif}
+body{
+  margin:0;
+  color:#493a27;
+  font-family:Georgia,serif;
+  background:
+    radial-gradient(ellipse at top,#f7edda,#d9c7a5 85%);
+}
 button{font:inherit;cursor:pointer}
 .topbar{
- min-height:68px;padding:9px 18px;display:flex;align-items:center;
- justify-content:space-between;gap:10px;flex-wrap:wrap;
- background:linear-gradient(#719c4d,#456e36);color:#fff;
- border-bottom:4px solid #34552d;box-shadow:0 3px 8px #49392355
+  min-height:76px;
+  padding:10px 3%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  color:#fff8df;
+  background:linear-gradient(180deg,#789b50,#456b36);
+  border-bottom:5px solid #34532e;
+  box-shadow:0 4px 12px #38271955;
 }
-.brand{font-size:25px;font-weight:bold;text-shadow:1px 2px 2px #294522}
+.brand{
+  font-size:27px;
+  font-weight:bold;
+  text-shadow:2px 3px 3px #253e24;
+}
 .resources{display:flex;gap:9px;flex-wrap:wrap}
-.resource{background:#31552e;border:1px solid #a6c477;border-radius:20px;padding:7px 12px;font-weight:bold}
-main{max-width:1200px;margin:auto;padding:12px}
-.gameframe{background:#f7edda;border:4px solid #a47a48;border-radius:15px;overflow:hidden;box-shadow:0 5px 15px #49392330}
-.scenehead{background:linear-gradient(#f3dfb4,#e5c98e);padding:9px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border-bottom:2px solid #bd965d}
-.scenehead strong{font-size:17px}
-#world{display:block;width:100%;height:auto;aspect-ratio:1000/590;background:#91b96a;cursor:pointer;touch-action:manipulation}
+.resource{
+  background:#36572f;
+  border:1px solid #b1c77b;
+  border-radius:22px;
+  padding:8px 15px;
+  box-shadow:inset 0 1px #ffffff35;
+  font-weight:bold;
+}
+main{max-width:1300px;margin:auto;padding:16px}
+.gameframe{
+  overflow:hidden;
+  border:5px solid #987044;
+  border-radius:17px;
+  background:#f6e9c9;
+  box-shadow:0 9px 25px #47341f35;
+}
+.scenehead{
+  padding:12px 18px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  background:linear-gradient(#f9e9c6,#e8d0a0);
+  border-bottom:2px solid #b18a55;
+}
+.scenehead strong{font-size:19px}
+.scenehead span{color:#766044}
+#world{
+  display:block;
+  width:100%;
+  height:auto;
+  background:#9dbb77;
+  touch-action:manipulation;
+}
+.plot{cursor:pointer}
+.plot:hover .plot-edge{stroke:#fff1a0;stroke-width:5}
 .toolbar{
- display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
- padding:12px;background:linear-gradient(#e8d2a5,#d6b77c);
- border-top:3px solid #a47a48
+  display:flex;
+  justify-content:center;
+  gap:9px;
+  flex-wrap:wrap;
+  padding:14px;
+  background:linear-gradient(#e9d5ad,#d7bd8b);
+  border-top:3px solid #a47b49;
 }
 .tool{
- min-width:92px;border:2px solid #a47a48;border-radius:11px;
- background:linear-gradient(#fff2c9,#e6c77f);padding:9px 12px;
- color:#523a20;font-weight:bold;box-shadow:0 2px 3px #0002
+  min-width:105px;
+  padding:9px 13px;
+  border:2px solid #a27b49;
+  border-radius:12px;
+  color:#503a21;
+  background:linear-gradient(#fff5d9,#e9ce91);
+  box-shadow:0 3px 4px #4a321c25;
+  font-weight:bold;
 }
-.tool span{display:block;font-size:22px;margin-bottom:3px}
-.tool.active{background:linear-gradient(#c5df9a,#8db75f);border-color:#456e36}
-.tool:hover,.action:hover{filter:brightness(1.06)}
-.info{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 14px;background:#fff9e9;font-size:14px}
-#message{font-weight:bold;color:#5a783d;min-height:20px}
-.progress{height:8px;background:#dfd2b6;border-radius:10px;overflow:hidden;width:115px;display:inline-block;vertical-align:middle}
-.progress i{display:block;height:100%;background:#7eae4d;width:0}
-.modalback{display:none;position:fixed;inset:0;background:#211b14aa;z-index:5;align-items:center;justify-content:center;padding:15px}
-.modal{width:min(680px,100%);max-height:85vh;overflow:auto;background:#fff5dc;border:5px solid #a77b46;border-radius:16px;box-shadow:0 12px 35px #0006}
-.modalhead{background:linear-gradient(#71994d,#496e36);color:white;padding:14px 17px;display:flex;justify-content:space-between;align-items:center;font-size:20px}
-.close{border:0;border-radius:50%;background:#fff1d2;color:#523a20;width:34px;height:34px;font-size:20px}
-.modalbody{padding:15px}
-.shopgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
-.shopitem{background:#f5e7c6;border:2px solid #d1b17a;border-radius:12px;text-align:center;padding:12px}
-.shopitem .emoji{font-size:38px}
+.tool span{display:block;font-size:23px;margin-bottom:3px}
+.tool.active{
+  background:linear-gradient(#d2e7a8,#93b96a);
+  border-color:#52783d;
+}
+.tool:hover,.action:hover{filter:brightness(1.07)}
+.info{
+  padding:11px 16px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  background:#fff8e7;
+  font-size:14px;
+}
+#message{font-weight:bold;color:#58763c;min-height:20px}
+.progress{
+  width:120px;height:9px;
+  display:inline-block;
+  overflow:hidden;
+  border-radius:10px;
+  background:#ded0ad;
+  vertical-align:middle;
+}
+.progress i{
+  display:block;width:0;height:100%;
+  background:linear-gradient(90deg,#a5c76b,#547d3d);
+}
+.modalback{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:10;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  background:#211b14bb;
+}
+.modal{
+  width:min(700px,100%);
+  max-height:85vh;
+  overflow:auto;
+  background:#fff3d7;
+  border:5px solid #a47a48;
+  border-radius:16px;
+  box-shadow:0 15px 40px #0007;
+}
+.modalhead{
+  padding:14px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:white;
+  background:linear-gradient(#779b50,#456b36);
+  font-size:21px;
+}
+.close{
+  width:35px;height:35px;
+  border:0;border-radius:50%;
+  background:#fff0d0;color:#503820;
+  font-size:22px;
+}
+.modalbody{padding:16px}
+.shopgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:11px;
+}
+.shopitem{
+  padding:13px;
+  text-align:center;
+  border:2px solid #d1b27d;
+  border-radius:12px;
+  background:#f7e9c8;
+}
+.shopitem .emoji{font-size:37px}
 .shopitem h3{margin:5px}
-.shopitem p{font-size:13px;margin:5px}
-.action{border:2px solid #956a37;border-radius:8px;background:linear-gradient(#fff0bd,#e5c477);padding:8px 12px;color:#52391f;font-weight:bold}
+.shopitem p{font-size:13px;margin:6px}
+.action{
+  padding:8px 13px;
+  border:2px solid #956b39;
+  border-radius:9px;
+  color:#513a20;
+  background:linear-gradient(#fff1c7,#e7c477);
+  font-weight:bold;
+}
 .action:disabled{opacity:.45;cursor:not-allowed}
-.notice{text-align:center;color:#816c4b;font-size:12px;padding:10px}
+.notice{text-align:center;color:#806b4b;font-size:12px}
 @media(max-width:600px){
- .brand{font-size:21px}.resource{font-size:12px;padding:6px 9px}
- main{padding:6px}.tool{min-width:76px;padding:8px 6px;font-size:12px}
- .tool span{font-size:20px}
+  main{padding:6px}
+  .brand{font-size:22px}
+  .resource{font-size:12px;padding:6px 9px}
+  .tool{min-width:76px;padding:8px 5px;font-size:12px}
+  .tool span{font-size:20px}
 }
 </style>
 </head>
 <body>
+
 <header class="topbar">
- <div class="brand">🌻 Fazenda Feliz</div>
- <div class="resources">
-  <div class="resource">🪙 <b id="coins">250</b></div>
-  <div class="resource">⭐ Nível <b id="level">1</b></div>
-  <div class="resource">✨ XP <b id="xp">0</b></div>
- </div>
+  <div class="brand">🌻 Fazenda Feliz</div>
+  <div class="resources">
+    <div class="resource">🪙 <b id="coins">250</b></div>
+    <div class="resource">⭐ Nível <b id="level">1</b></div>
+    <div class="resource">✨ XP <b id="xp">0</b></div>
+  </div>
 </header>
+
 <main>
- <section class="gameframe">
+<section class="gameframe">
   <div class="scenehead">
-   <strong>🏡 Minha fazenda</strong>
-   <span>🌤️ Um lindo dia no campo</span>
+    <strong>🏡 Minha fazenda</strong>
+    <span>Um lugar para cultivar seus sonhos</span>
   </div>
-  <canvas id="world" width="1000" height="590"></canvas>
+
+  <svg id="world" viewBox="0 0 1100 650"
+       xmlns="http://www.w3.org/2000/svg"
+       aria-label="Fazenda Feliz em perspectiva isométrica">
+
+    <defs>
+      <linearGradient id="grass" x2="0.2" y2="1">
+        <stop stop-color="#b7d58a"/>
+        <stop offset=".5" stop-color="#8eb96a"/>
+        <stop offset="1" stop-color="#6e9b50"/>
+      </linearGradient>
+      <linearGradient id="tileSide" x2="0" y2="1">
+        <stop stop-color="#9e7548"/>
+        <stop offset="1" stop-color="#69472f"/>
+      </linearGradient>
+      <linearGradient id="roof" x2=".8" y2="1">
+        <stop stop-color="#c4774d"/>
+        <stop offset="1" stop-color="#7f402f"/>
+      </linearGradient>
+      <linearGradient id="wall" x2="0" y2="1">
+        <stop stop-color="#f4dfb0"/>
+        <stop offset="1" stop-color="#cda976"/>
+      </linearGradient>
+      <radialGradient id="leaf">
+        <stop stop-color="#83b75a"/>
+        <stop offset="1" stop-color="#356c38"/>
+      </radialGradient>
+      <linearGradient id="water" x2="0" y2="1">
+        <stop stop-color="#b1d5c1"/>
+        <stop offset="1" stop-color="#579c98"/>
+      </linearGradient>
+      <pattern id="grassTexture" width="45" height="38" patternUnits="userSpaceOnUse">
+        <path d="M5 24l3 -5m5 9l2 -5m20 -12l2 -5m-7 25l3 -5"
+              stroke="#e4efb6" stroke-width="1.4" opacity=".45"/>
+        <circle cx="28" cy="20" r="1.5" fill="#507e43" opacity=".35"/>
+      </pattern>
+      <pattern id="soilTexture" width="24" height="18" patternUnits="userSpaceOnUse">
+        <path d="M3 7l7 -2m5 9l6 -2" stroke="#c69b69" stroke-width="1.5" opacity=".6"/>
+      </pattern>
+      <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+        <feGaussianBlur stdDeviation="6"/>
+      </filter>
+    </defs>
+
+    <!-- Fundo e terreno -->
+    <rect width="1100" height="650" fill="#a9c77d"/>
+    <path d="M0 0H1100V650H0Z" fill="url(#grassTexture)" opacity=".7"/>
+
+    <!-- Base elevada da fazenda -->
+    <path d="M550 60L1050 310L550 610L50 310Z"
+          fill="#765238" opacity=".35" transform="translate(0 24)"/>
+    <path d="M550 60L1050 310L550 610L50 310Z"
+          fill="url(#tileSide)" stroke="#69472f" stroke-width="3"/>
+    <path d="M50 310L550 560L1050 310V340L550 610L50 340Z"
+          fill="#8a6240"/>
+    <path d="M550 60L1050 310L550 560L50 310Z"
+          fill="url(#grass)" stroke="#d2df9b" stroke-width="4"/>
+    <path d="M550 60L1050 310L550 560L50 310Z"
+          fill="url(#grassTexture)" opacity=".75"/>
+
+    <!-- Caminho de terra -->
+    <path d="M350 330Q410 300 485 326T650 330Q740 350 805 306"
+          fill="none" stroke="#96754f" stroke-width="55"
+          stroke-linecap="round" opacity=".75"/>
+    <path d="M350 324Q420 296 485 319T650 324Q740 344 805 300"
+          fill="none" stroke="#c7a77a" stroke-width="43"
+          stroke-linecap="round"/>
+    <path d="M350 315Q420 291 485 312T650 317Q740 336 805 293"
+          fill="none" stroke="#e0c59a" stroke-width="2"
+          stroke-dasharray="3 14" opacity=".7"/>
+
+    <!-- Lago -->
+    <ellipse cx="850" cy="200" rx="105" ry="48" fill="#4e754a" opacity=".25"/>
+    <path d="M754 190Q773 158 831 157Q908 145 945 180
+             Q970 210 923 229Q855 253 785 222Q750 210 754 190Z"
+          fill="#477f78"/>
+    <path d="M762 184Q785 157 839 162Q901 153 938 182
+             Q951 204 918 217Q854 240 790 215Q760 204 762 184Z"
+          fill="url(#water)" stroke="#d4e5bd" stroke-width="3"/>
+    <path d="M790 185q25 -10 48 -2m40 20q22 -8 43 -2"
+          fill="none" stroke="#e5f0d2" stroke-width="3" opacity=".65"/>
+
+    <!-- Árvores do cenário -->
+    <g transform="translate(170 210)">
+      <ellipse cx="0" cy="20" rx="45" ry="14" fill="#41683b" opacity=".3"/>
+      <path d="M-8 12L-6 -39L8 -39L12 12Z" fill="#79502e"/>
+      <circle cx="-15" cy="-49" r="30" fill="#356c38"/>
+      <circle cx="14" cy="-53" r="33" fill="url(#leaf)"/>
+      <circle cx="-2" cy="-75" r="27" fill="#60994a"/>
+      <circle cx="-25" cy="-53" r="13" fill="#80b65d"/>
+      <circle cx="24" cy="-43" r="15" fill="#77a951"/>
+      <circle cx="-5" cy="-83" r="9" fill="#a0c86c" opacity=".65"/>
+    </g>
+    <g transform="translate(330 145) scale(.8)">
+      <ellipse cx="0" cy="20" rx="45" ry="14" fill="#41683b" opacity=".3"/>
+      <path d="M-8 12L-6 -39L8 -39L12 12Z" fill="#79502e"/>
+      <circle cx="-15" cy="-49" r="30" fill="#356c38"/>
+      <circle cx="14" cy="-53" r="33" fill="url(#leaf)"/>
+      <circle cx="-2" cy="-75" r="27" fill="#60994a"/>
+      <circle cx="-25" cy="-53" r="13" fill="#80b65d"/>
+      <circle cx="24" cy="-43" r="15" fill="#77a951"/>
+    </g>
+    <g transform="translate(940 300) scale(1.05)">
+      <ellipse cx="0" cy="20" rx="45" ry="14" fill="#41683b" opacity=".3"/>
+      <path d="M-8 12L-6 -39L8 -39L12 12Z" fill="#79502e"/>
+      <circle cx="-15" cy="-49" r="30" fill="#356c38"/>
+      <circle cx="14" cy="-53" r="33" fill="url(#leaf)"/>
+      <circle cx="-2" cy="-75" r="27" fill="#60994a"/>
+      <circle cx="-25" cy="-53" r="13" fill="#80b65d"/>
+      <circle cx="24" cy="-43" r="15" fill="#77a951"/>
+    </g>
+
+    <!-- Casa principal -->
+    <g transform="translate(710 260)">
+      <ellipse cx="0" cy="65" rx="105" ry="25" fill="#29452c" opacity=".22"/>
+      <path d="M-78 -6L0 -47L78 -6V59L0 94L-78 59Z"
+            fill="#9c7048"/>
+      <path d="M-78 -6L0 -47V30L-78 59Z" fill="#d2ad79"/>
+      <path d="M0 -47L78 -6V59L0 30Z" fill="url(#wall)"/>
+      <path d="M-91 -8L0 -83L93 -8L77 1L0 -61L-77 1Z"
+            fill="url(#roof)" stroke="#743e30" stroke-width="3"/>
+      <path d="M0 -83L93 -8L77 1L0 -61Z" fill="#8b4935"/>
+      <path d="M-78 -8L0 -61L0 -52L-76 10Z"
+            fill="#d18a5b" opacity=".6"/>
+      <path d="M-8 39L15 29V80L-8 91Z" fill="#68452d"/>
+      <path d="M15 29L37 39V72L15 80Z" fill="#855b39"/>
+      <path d="M-59 16L-36 4V32L-59 44Z" fill="#77aeb0" stroke="#775334" stroke-width="4"/>
+      <path d="M43 6L65 17V44L43 33Z" fill="#77aeb0" stroke="#775334" stroke-width="4"/>
+      <path d="M-53 24L-42 18M49 15L59 20" stroke="#e7f0d4" stroke-width="3"/>
+      <path d="M-12 -65L-12 -87L10 -102L25 -91L25 -55"
+            fill="#9c5b3c" stroke="#713d2d" stroke-width="3"/>
+      <path d="M-12 -87L10 -102L25 -91L5 -78Z" fill="#bd7650"/>
+    </g>
+
+    <!-- Cerca de madeira -->
+    <g stroke="#e5d0a2" stroke-linecap="round">
+      <path d="M390 230L485 277M485 277L570 235"
+            fill="none" stroke-width="8"/>
+      <path d="M400 210L400 252M442 232L442 273M485 253L485 295
+               M528 253L528 274M568 214L568 253"
+            fill="none" stroke-width="7"/>
+      <path d="M390 218L485 265L570 223"
+            fill="none" stroke="#a77b4d" stroke-width="2"/>
+    </g>
+
+    <!-- Canteiros gerados pelo jogo -->
+    <g id="plots"></g>
+
+    <!-- Pequenos detalhes de vegetação -->
+    <g fill="#f3e9b3">
+      <circle cx="105" cy="310" r="3"/><circle cx="120" cy="326" r="3"/>
+      <circle cx="275" cy="260" r="3"/><circle cx="300" cy="280" r="3"/>
+      <circle cx="900" cy="400" r="3"/><circle cx="920" cy="418" r="3"/>
+      <circle cx="620" cy="460" r="3"/><circle cx="650" cy="474" r="3"/>
+    </g>
+    <g fill="#d7a6a1">
+      <circle cx="107" cy="310" r="2"/><circle cx="277" cy="260" r="2"/>
+      <circle cx="902" cy="400" r="2"/><circle cx="622" cy="460" r="2"/>
+    </g>
+
+    <!-- Placa -->
+    <g transform="translate(135 385)">
+      <path d="M0 0V53" stroke="#68452c" stroke-width="8"/>
+      <path d="M-43 -19L44 -19L35 20L-35 20Z"
+            fill="#a87542" stroke="#68452c" stroke-width="3"/>
+      <path d="M-35 -12H36" stroke="#d6b17b" stroke-width="2"/>
+      <text x="0" y="-1" text-anchor="middle"
+            font-size="13" font-weight="bold" fill="#fff1d1">MINHA</text>
+      <text x="0" y="13" text-anchor="middle"
+            font-size="13" font-weight="bold" fill="#fff1d1">FAZENDA</text>
+    </g>
+  </svg>
+
   <div class="info">
-   <span id="message">Bem-vindo à sua fazenda! Escolha uma ferramenta para começar.</span>
-   <span>Progresso: <span class="progress"><i id="xpbar"></i></span></span>
+    <span id="message">Bem-vindo à sua fazenda! 🌻</span>
+    <span>Progresso: <span class="progress"><i id="xpbar"></i></span></span>
   </div>
+
   <nav class="toolbar">
-   <button class="tool active" data-mode="select" onclick="setMode('select')"><span>👆</span>Selecionar</button>
-   <button class="tool" data-mode="plant" onclick="setMode('plant')"><span>🌱</span>Plantar</button>
-   <button class="tool" data-mode="water" onclick="setMode('water')"><span>💧</span>Regar</button>
-   <button class="tool" data-mode="harvest" onclick="setMode('harvest')"><span>🧺</span>Colher</button>
-   <button class="tool" onclick="showShop()"><span>🏪</span>Loja</button>
-   <button class="tool" onclick="showInventory()"><span>🎒</span>Inventário</button>
+    <button class="tool active" data-mode="select" onclick="setMode('select')">
+      <span>👆</span>Selecionar
+    </button>
+    <button class="tool" data-mode="plant" onclick="setMode('plant')">
+      <span>🌱</span>Plantar
+    </button>
+    <button class="tool" data-mode="water" onclick="setMode('water')">
+      <span>💧</span>Regar
+    </button>
+    <button class="tool" data-mode="harvest" onclick="setMode('harvest')">
+      <span>🧺</span>Colher
+    </button>
+    <button class="tool" onclick="showShop()">
+      <span>🏪</span>Loja
+    </button>
+    <button class="tool" onclick="showInventory()">
+      <span>🎒</span>Inventário
+    </button>
   </nav>
- </section>
- <p class="notice">Fazenda Feliz • Sua história começa aqui 🌻</p>
+</section>
+<p class="notice">Fazenda Feliz • Sua história começa aqui</p>
 </main>
 
 <div class="modalback" id="modalback" onclick="if(event.target===this)closeModal()">
- <section class="modal">
-  <div class="modalhead"><strong id="modalTitle">Loja</strong><button class="close" onclick="closeModal()">×</button></div>
-  <div class="modalbody" id="modalbody"></div>
- </section>
+  <section class="modal">
+    <div class="modalhead">
+      <strong id="modalTitle">Loja</strong>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modalbody" id="modalbody"></div>
+  </section>
 </div>
 
 <script>
-const canvas=document.getElementById('world');
-const ctx=canvas.getContext('2d');
-
 const crops={
- trigo:{name:'Trigo',emoji:'🌾',cost:10,sell:24,time:25,xp:5},
- cenoura:{name:'Cenoura',emoji:'🥕',cost:18,sell:42,time:40,xp:8},
- milho:{name:'Milho',emoji:'🌽',cost:30,sell:70,time:60,xp:12},
- morango:{name:'Morango',emoji:'🍓',cost:45,sell:105,time:90,xp:18}
+  trigo:{name:'Trigo',emoji:'🌾',cost:10,sell:24,time:25,xp:5},
+  cenoura:{name:'Cenoura',emoji:'🥕',cost:18,sell:42,time:40,xp:8},
+  milho:{name:'Milho',emoji:'🌽',cost:30,sell:70,time:60,xp:12},
+  morango:{name:'Morango',emoji:'🍓',cost:45,sell:105,time:90,xp:18}
 };
 
 let state={
- coins:250,xp:0,level:1,mode:'select',seed:'trigo',
- inventory:{trigo:5,cenoura:0,milho:0,morango:0},
- plots:Array.from({length:6},()=>null),
- unlocked:6
+  coins:250,xp:0,level:1,mode:'select',seed:'trigo',
+  inventory:{trigo:5,cenoura:0,milho:0,morango:0},
+  plots:Array.from({length:6},()=>null),
+  unlocked:6
 };
 
+const plotPositions=[
+  [420,355],[520,405],[620,355],
+  [520,305],[620,255],[720,305]
+];
+
 function save(){
- try{localStorage.setItem('fazendaFeliz_v2',JSON.stringify(state))}catch(e){}
+  try{localStorage.setItem('fazendaFeliz_v3',JSON.stringify(state))}
+  catch(e){}
 }
 function load(){
- try{
-  const s=JSON.parse(localStorage.getItem('fazendaFeliz_v2'));
-  if(s){
-   state={...state,...s};
-   state.inventory={...{trigo:5,cenoura:0,milho:0,morango:0},...s.inventory};
-   state.plots=Array.isArray(s.plots)?s.plots:[];
-  }
- }catch(e){}
- while(state.plots.length<state.unlocked)state.plots.push(null);
+  try{
+    let s=JSON.parse(localStorage.getItem('fazendaFeliz_v3'));
+    if(!s){
+      const old=JSON.parse(localStorage.getItem('fazendaFeliz_v2'));
+      if(old)s=old;
+    }
+    if(s){
+      state={...state,...s};
+      state.inventory={...state.inventory,...s.inventory};
+      state.plots=Array.isArray(s.plots)?s.plots:state.plots;
+    }
+  }catch(e){}
+  while(state.plots.length<state.unlocked)state.plots.push(null);
 }
-function say(t){document.getElementById('message').textContent=t}
+function say(t){
+  document.getElementById('message').textContent=t;
+}
 function update(){
- document.getElementById('coins').textContent=state.coins;
- document.getElementById('xp').textContent=state.xp;
- document.getElementById('level').textContent=state.level;
- document.getElementById('xpbar').style.width=(state.xp/(state.level*100)*100)+'%';
- save();draw();
+  document.getElementById('coins').textContent=state.coins;
+  document.getElementById('xp').textContent=state.xp;
+  document.getElementById('level').textContent=state.level;
+  document.getElementById('xpbar').style.width=
+    (state.xp/(state.level*100)*100)+'%';
+  drawPlots();
+  save();
 }
 function setMode(m){
- state.mode=m;
- document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
- const messages={
- select:'Selecione um canteiro para ver sua situação.',
- plant:'Escolha sua semente na loja e clique em um canteiro vazio.',
- water:'Clique em uma plantação para regar.',
- harvest:'Clique em uma plantação madura para colher.'
- };
- say(messages[m]);draw();
+  state.mode=m;
+  document.querySelectorAll('[data-mode]').forEach(b=>
+    b.classList.toggle('active',b.dataset.mode===m)
+  );
+  const messages={
+    select:'Selecione um canteiro para ver sua situação.',
+    plant:'Escolha uma semente e clique em um canteiro vazio.',
+    water:'Clique em uma plantação para regar.',
+    harvest:'Clique em uma plantação madura para colher.'
+  };
+  say(messages[m]);
 }
 function addXP(n){
- state.xp+=n;
- while(state.xp>=state.level*100){
-  state.xp-=state.level*100;state.level++;
-  say('🎉 Parabéns! Você alcançou o nível '+state.level+'!');
- }
+  state.xp+=n;
+  while(state.xp>=state.level*100){
+    state.xp-=state.level*100;
+    state.level++;
+    say('Parabéns! Você chegou ao nível '+state.level+'!');
+  }
 }
 function plant(i){
- if(state.plots[i]){say('Este canteiro já está ocupado.');return}
- const s=crops[state.seed];
- if(state.inventory[state.seed]<=0){say('Você não tem essa semente. Visite a loja!');return}
- state.inventory[state.seed]--;
- state.plots[i]={type:state.seed,planted:Date.now(),watered:false};
- say(s.name+' plantado! Aguarde crescer.');
- update();
+  if(state.plots[i]){
+    say('Este canteiro já está ocupado.');
+    return;
+  }
+  const s=crops[state.seed];
+  if(state.inventory[state.seed]<=0){
+    say('Você não tem essa semente. Visite a loja!');
+    return;
+  }
+  state.inventory[state.seed]--;
+  state.plots[i]={type:state.seed,planted:Date.now(),watered:false};
+  say(s.name+' plantado! Aguarde crescer.');
+  update();
 }
 function water(i){
- const p=state.plots[i];
- if(!p){say('Não há nada plantado neste canteiro.');return}
- if(p.watered){say('Esta plantação já foi regada.');return}
- p.watered=true;
- p.planted-=Math.floor(crops[p.type].time*1000*.15);
- say('💧 Plantação regada! O crescimento foi acelerado.');
- update();
+  const p=state.plots[i];
+  if(!p){say('Não há nada plantado aqui.');return;}
+  if(p.watered){say('Esta plantação já foi regada.');return;}
+  p.watered=true;
+  p.planted-=Math.floor(crops[p.type].time*1000*.15);
+  say('Plantação regada! O crescimento foi acelerado.');
+  update();
 }
 function harvest(i){
- const p=state.plots[i];if(!p){say('Este canteiro está vazio.');return}
- const s=crops[p.type];
- if(Date.now()<p.planted+s.time*1000){say('Ainda está crescendo! Espere mais um pouquinho.');return}
- state.coins+=s.sell;addXP(s.xp);state.plots[i]=null;
- say('Você colheu '+s.name+'! +'+s.sell+' moedas e +'+s.xp+' XP.');
- update();
+  const p=state.plots[i];
+  if(!p){say('Este canteiro está vazio.');return;}
+  const s=crops[p.type];
+  if(Date.now()<p.planted+s.time*1000){
+    say('Ainda está crescendo! Espere mais um pouquinho.');
+    return;
+  }
+  state.coins+=s.sell;
+  addXP(s.xp);
+  state.plots[i]=null;
+  say('Você colheu '+s.name+'! +'+s.sell+' moedas e +'+s.xp+' XP.');
+  update();
 }
 function clickPlot(i){
- if(i>=state.unlocked)return;
- if(state.mode==='plant')plant(i);
- else if(state.mode==='water')water(i);
- else if(state.mode==='harvest')harvest(i);
- else{
-  const p=state.plots[i];
-  if(!p)say('Canteiro vazio. Selecione plantar para cultivar.');
+  if(i>=state.unlocked)return;
+  if(state.mode==='plant')plant(i);
+  else if(state.mode==='water')water(i);
+  else if(state.mode==='harvest')harvest(i);
   else{
-   const s=crops[p.type],left=Math.max(0,Math.ceil((p.planted+s.time*1000-Date.now())/1000));
-   say(left?'🌱 '+s.name+' crescendo. Faltam '+left+' segundos.':'✨ '+s.name+' está pronta para colher!');
+    const p=state.plots[i];
+    if(!p)say('Canteiro vazio. Escolha plantar para cultivar.');
+    else{
+      const s=crops[p.type];
+      const left=Math.max(0,Math.ceil(
+        (p.planted+s.time*1000-Date.now())/1000
+      ));
+      say(left?s.name+' crescendo. Faltam '+left+' segundos.':
+        s.name+' está pronta para colher!');
+    }
   }
- }
+}
+function plotMarkup(i){
+  const [x,y]=plotPositions[i%plotPositions.length];
+  return `
+  <g class="plot" data-plot="${i}" transform="translate(${x} ${y})">
+    <path d="M0 -30L64 0L0 30L-64 0Z"
+          fill="#65472e" opacity=".28" transform="translate(0 8)"/>
+    <path class="plot-edge"
+          d="M0 -30L64 0L0 30L-64 0Z"
+          fill="#9a7045" stroke="#e2c18a" stroke-width="3"/>
+    <path d="M0 -23L49 0L0 23L-49 0Z"
+          fill="#795437" stroke="#b78c5a" stroke-width="2"/>
+    <path d="M-34 -7L0 9L34 -7M-34 2L0 18L34 2"
+          fill="none" stroke="#a77b4f" stroke-width="2"/>
+    <g class="crop-art"></g>
+  </g>`;
+}
+function drawPlots(){
+  const root=document.getElementById('plots');
+  root.innerHTML='';
+  for(let i=0;i<state.unlocked;i++){
+    root.insertAdjacentHTML('beforeend',plotMarkup(i));
+    const group=root.lastElementChild;
+    const p=state.plots[i];
+    if(!p)continue;
+    const art=group.querySelector('.crop-art');
+    const s=crops[p.type];
+    const progress=Math.min(1,(Date.now()-p.planted)/(s.time*1000));
+    const ready=progress>=1;
+    const count=ready?5:Math.max(1,Math.ceil(progress*5));
+    let plants='';
+    for(let j=0;j<count;j++){
+      const px=(j%3-1)*19;
+      const py=(j>2?7:-3);
+      if(ready){
+        plants+=`
+        <g transform="translate(${px} ${py})">
+          <path d="M0 0Q-2 -12 0 -18" stroke="#3c7139" stroke-width="3" fill="none"/>
+          <ellipse cx="-6" cy="-15" rx="7" ry="4"
+                   transform="rotate(-25 -6 -15)" fill="#70a84d"/>
+          <ellipse cx="7" cy="-18" rx="7" ry="4"
+                   transform="rotate(25 7 -18)" fill="#8cbd5d"/>
+          <circle cx="0" cy="-23" r="5" fill="${
+            p.type==='morango'?'#c64d42':
+            p.type==='cenoura'?'#e48d3f':
+            p.type==='milho'?'#e6c34e':'#c6a44f'
+          }"/>
+        </g>`;
+      }else{
+        plants+=`
+        <g transform="translate(${px} ${py})">
+          <path d="M0 0Q-2 -10 0 -15" stroke="#3c7139" stroke-width="3" fill="none"/>
+          <ellipse cx="-5" cy="-12" rx="6" ry="3"
+                   transform="rotate(-25 -5 -12)" fill="#70a84d"/>
+          <ellipse cx="6" cy="-15" rx="6" ry="3"
+                   transform="rotate(25 6 -15)" fill="#8cbd5d"/>
+        </g>`;
+      }
+    }
+    art.innerHTML=plants;
+  }
 }
 function showShop(){
- document.getElementById('modalTitle').textContent='🏪 Loja da Fazenda';
- document.getElementById('modalbody').innerHTML='<p>Escolha as sementes para sua plantação.</p><div class="shopgrid">'+
- Object.entries(crops).map(([id,s])=>`
- <article class="shopitem"><div class="emoji">${s.emoji}</div><h3>${s.name}</h3>
- <p>Preço: 🪙 ${s.cost}</p><p>Colheita: 🪙 ${s.sell}</p>
- <p>Tempo: ${s.time} segundos</p><button class="action" onclick="buySeed('${id}')">Comprar 1</button>
- <p>Estoque: ${state.inventory[id]}</p></article>`).join('')+
- '</div><p style="text-align:center">Saldo: 🪙 '+state.coins+'</p>';
- openModal();
+  document.getElementById('modalTitle').textContent='Loja da Fazenda';
+  document.getElementById('modalbody').innerHTML=
+    '<p>Escolha sementes para sua plantação.</p><div class="shopgrid">'+
+    Object.entries(crops).map(([id,s])=>`
+      <article class="shopitem">
+        <div class="emoji">${s.emoji}</div>
+        <h3>${s.name}</h3>
+        <p>Preço: ${s.cost} moedas</p>
+        <p>Colheita: ${s.sell} moedas</p>
+        <p>Tempo: ${s.time} segundos</p>
+        <button class="action" onclick="buySeed('${id}')">Comprar 1</button>
+        <p>Estoque: ${state.inventory[id]}</p>
+      </article>`).join('')+
+    '</div><p style="text-align:center">Saldo: '+state.coins+' moedas</p>';
+  openModal();
 }
 function buySeed(id){
- const s=crops[id];
- if(state.coins<s.cost){say('Moedas insuficientes!');return}
- state.coins-=s.cost;state.inventory[id]++;
- state.seed=id;setMode('plant');showShop();update();
- say('Você comprou uma semente de '+s.name+'.');
+  const s=crops[id];
+  if(state.coins<s.cost){say('Moedas insuficientes!');return;}
+  state.coins-=s.cost;
+  state.inventory[id]++;
+  state.seed=id;
+  update();
+  showShop();
+  say('Você comprou uma semente de '+s.name+'.');
+  setMode('plant');
 }
 function showInventory(){
- document.getElementById('modalTitle').textContent='🎒 Inventário';
- document.getElementById('modalbody').innerHTML='<div class="shopgrid">'+
- Object.entries(crops).map(([id,s])=>`<article class="shopitem"><div class="emoji">${s.emoji}</div><h3>${s.name}</h3><p>Quantidade: <b>${state.inventory[id]}</b></p><button class="action" onclick="chooseSeed('${id}')">Selecionar</button></article>`).join('')+
- '</div>';
- openModal();
+  document.getElementById('modalTitle').textContent='Inventário';
+  document.getElementById('modalbody').innerHTML=
+    '<div class="shopgrid">'+
+    Object.entries(crops).map(([id,s])=>`
+      <article class="shopitem">
+        <div class="emoji">${s.emoji}</div>
+        <h3>${s.name}</h3>
+        <p>Quantidade: <b>${state.inventory[id]}</b></p>
+        <button class="action" onclick="chooseSeed('${id}')">Selecionar</button>
+      </article>`).join('')+'</div>';
+  openModal();
 }
-function chooseSeed(id){state.seed=id;setMode('plant');closeModal();say('Semente selecionada: '+crops[id].name+'.');}
-function openModal(){document.getElementById('modalback').style.display='flex'}
-function closeModal(){document.getElementById('modalback').style.display='none'}
-function expand(){
- const cost=state.unlocked*100;
- if(state.coins<cost){say('Você precisa de '+cost+' moedas para expandir.');return}
- state.coins-=cost;state.unlocked+=2;
- while(state.plots.length<state.unlocked)state.plots.push(null);
- say('🌳 Novos terrenos desbloqueados!');
- update();
+function chooseSeed(id){
+  state.seed=id;
+  setMode('plant');
+  closeModal();
+  say('Semente selecionada: '+crops[id].name+'.');
 }
-
-// Desenho do cenário
-function polygon(points,fill,stroke=null){
- ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
- for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);
- ctx.closePath();ctx.fillStyle=fill;ctx.fill();
- if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}
+function openModal(){
+  document.getElementById('modalback').style.display='flex';
 }
-function ellipse(x,y,rx,ry,color){
- ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+function closeModal(){
+  document.getElementById('modalback').style.display='none';
 }
-function tree(x,y,scale=1){
- ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
- ellipse(5,8,25,9,'#50713b');
- ctx.fillStyle='#78502d';ctx.fillRect(-5,-31,10,37);
- ellipse(-9,-39,19,22,'#3e7037');
- ellipse(10,-49,21,24,'#578c42');
- ellipse(1,-64,17,19,'#6a9c4c');
- ellipse(-15,-52,7,7,'#78aa55');
- ctx.restore();
-}
-function house(x,y){
- ellipse(x,y+12,65,17,'#567541');
- // paredes
- polygon([[x-42,y-35],[x,y-55],[x+43,y-35],[x+43,y+8],[x,y+27],[x-42,y+8]],'#e8cf9b','#936d45');
- polygon([[x-42,y-35],[x,y-55],[x,y-5],[x-42,y+8]],'#d9b77d');
- polygon([[x,y-55],[x+43,y-35],[x,y-5]],'#f0d8a9');
- // telhado
- polygon([[x-52,y-37],[x,y-82],[x+53,y-37],[x+40,y-29],[x,y-65],[x-39,y-29]],'#a34f35','#753a2c');
- polygon([[x,y-82],[x+53,y-37],[x+40,y-29],[x,y-65]],'#87402e');
- // porta e janela
- polygon([[x-12,y-18],[x,y-24],[x+12,y-18],[x+12,y+20],[x-12,y+20]],'#70472c');
- polygon([[x-36,y-28],[x-21,y-35],[x-21,y-17],[x-36,y-10]],'#8fc3c3','#795735');
- polygon([[x+20,y-31],[x+35,y-24],[x+35,y-7],[x+20,y-14]],'#8fc3c3','#795735');
-}
-function fence(x,y){
- ctx.strokeStyle='#e6d2a4';ctx.lineWidth=6;ctx.lineCap='round';
- ctx.beginPath();ctx.moveTo(x-45,y);ctx.lineTo(x+45,y-18);ctx.stroke();
- ctx.lineWidth=4;
- for(let i=0;i<5;i++){
-  let px=x-42+i*21,py=y-i*4.2;
-  ctx.beginPath();ctx.moveTo(px,py-15);ctx.lineTo(px,py+10);ctx.stroke();
- }
-}
-function plotCenter(i){
- const col=i%3,row=Math.floor(i/3);
- return {x:500+(col-row)*83,y:350+(col+row)*43};
-}
-function plotShape(x,y){
- return [[x,y-25],[x+52,y],[x,y+25],[x-52,y]];
-}
-function drawPlot(i){
- const {x,y}=plotCenter(i);
- polygon([[x,y-27],[x+55,y],[x,y+27],[x-55,y]],'#a17b4b','#e2c18a');
- polygon([[x,y-22],[x+47,y],[x,y+22],[x-47,y]],'#795435','#b18a5c');
- for(let k=0;k<4;k++){
-  ctx.strokeStyle='#a47b4e';ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(x-34,y-8+k*5);ctx.lineTo(x+34,y+8+k*5);ctx.stroke();
- }
- const p=state.plots[i];
- if(p){
-  const s=crops[p.type],progress=Math.min(1,(Date.now()-p.planted)/(s.time*1000));
-  const ready=progress>=1;
-  const count=ready?5:Math.max(1,Math.ceil(progress*5));
-  for(let j=0;j<count;j++){
-   const px=x+(j%3-1)*20+(j>2?0:0);
-   const py=y-8+Math.floor(j/3)*12;
-   if(ready){
-    ctx.font='25px serif';ctx.textAlign='center';ctx.fillText(s.emoji,px,py);
-   }else{
-    ctx.strokeStyle='#39773a';ctx.lineWidth=3;
-    ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-2,py-14);ctx.stroke();
-    ellipse(px-5,py-12,5,3,'#73a74c');
-    ellipse(px+3,py-16,5,3,'#8cbd5d');
-   }
-  }
-  if(ready){ctx.font='15px serif';ctx.fillText('✨',x,y-30)}
- }
-}
-function draw(){
- ctx.clearRect(0,0,1000,590);
- // fundo e prado
- const bg=ctx.createLinearGradient(0,0,0,590);
- bg.addColorStop(0,'#b4d58a');bg.addColorStop(.55,'#92bd6b');bg.addColorStop(1,'#719f50');
- ctx.fillStyle=bg;ctx.fillRect(0,0,1000,590);
- // manchas suaves da grama
- for(let i=0;i<45;i++){
-  const x=(i*197+31)%1000,y=(i*113+27)%590;
-  ellipse(x,y,18+(i%4)*5,5,'#ffffff0b');
- }
- // caminho sinuoso
- polygon([[0,440],[125,390],[270,405],[405,465],[560,478],[720,420],[850,390],[1000,420],[1000,465],[850,435],[720,465],[565,525],[400,510],[250,450],[120,440],[0,485]],'#c5a477');
- // caminho pedras
- for(let i=0;i<18;i++){
-  const x=i*61-15,y=445+Math.sin(i*.7)*27;
-  ellipse(x,y,13,5,'#ddc69d');
- }
- // lago decorativo
- ellipse(855,160,88,35,'#668f75');
- ellipse(855,153,82,30,'#81b6ad');
- ellipse(830,145,20,5,'#b4d7c0');
- // árvores
- tree(105,175,1.3);tree(230,115,1.1);tree(890,255,1.15);
- tree(755,100,.95);tree(145,300,.8);
- // horta e cercas
- fence(390,280);fence(590,280);
- // casa
- house(740,300);
- // canteiros
- for(let i=0;i<state.unlocked;i++)drawPlot(i);
- // flores
- for(let i=0;i<24;i++){
-  let x=(i*83+17)%980,y=(i*137+40)%550;
-  if(y>290&&y<420&&x>300&&x<700)continue;
-  ctx.font='13px serif';ctx.textAlign='center';
-  ctx.fillText(i%2?'🌼':'🌸',x,y);
- }
- // placas
- ctx.fillStyle='#714d2f';ctx.fillRect(55,365,7,39);
- polygon([[25,340],[115,340],[108,373],[32,373]],'#b98a4d','#79552e');
- ctx.fillStyle='#fff1cf';ctx.font='bold 13px Georgia';ctx.textAlign='center';
- ctx.fillText('MINHA',70,353);ctx.fillText('FAZENDA',70,367);
-}
-function hitTest(mx,my){
- let best=-1,dist=Infinity;
- for(let i=0;i<state.unlocked;i++){
-  const {x,y}=plotCenter(i);
-  const d=Math.abs(mx-x)/55+Math.abs(my-y)/27;
-  if(d<dist){dist=d;best=i}
- }
- return dist<1.35?best:-1;
-}
-canvas.addEventListener('click',e=>{
- const r=canvas.getBoundingClientRect();
- const mx=(e.clientX-r.left)*1000/r.width;
- const my=(e.clientY-r.top)*590/r.height;
- const i=hitTest(mx,my);
- if(i<0){say('Clique em um dos canteiros de plantação.');return}
- clickPlot(i);
+document.getElementById('plots').addEventListener('click',e=>{
+  const group=e.target.closest('[data-plot]');
+  if(group)clickPlot(Number(group.dataset.plot));
 });
-function clickPlot(i){
- if(state.mode==='plant')plant(i);
- else if(state.mode==='water')water(i);
- else if(state.mode==='harvest')harvest(i);
- else{
-  const p=state.plots[i];
-  if(!p){say('Terreno livre. Escolha plantar para começar.');return}
-  const s=crops[p.type],left=Math.max(0,Math.ceil((p.planted+s.time*1000-Date.now())/1000));
-  say(left?'🌱 '+s.name+' crescendo. Faltam '+left+' segundos.':'✨ '+s.name+' está pronta para colher!');
- }
-}
+
 load();
 update();
-setInterval(()=>{draw()},1000);
+setInterval(()=>{
+  drawPlots();
+},1000);
 setInterval(save,5000);
 </script>
 </body>
