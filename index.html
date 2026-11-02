@@ -1,680 +1,81 @@
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fazenda Feliz</title>
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fazenda Feliz</title>
 <style>
-:root {
-  --green:#557d3e;
-  --deep:#34532e;
-  --gold:#e6bd70;
-  --cream:#fff3d7;
-  --brown:#79512f;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  color:#493a27;
-  font-family:Georgia,serif;
-  background:
-    radial-gradient(ellipse at top,#f7edda,#d9c7a5 85%);
-}
-button{font:inherit;cursor:pointer}
-.topbar{
-  min-height:76px;
-  padding:10px 3%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:12px;
-  color:#fff8df;
-  background:linear-gradient(180deg,#789b50,#456b36);
-  border-bottom:5px solid #34532e;
-  box-shadow:0 4px 12px #38271955;
-}
-.brand{
-  font-size:27px;
-  font-weight:bold;
-  text-shadow:2px 3px 3px #253e24;
-}
-.resources{display:flex;gap:9px;flex-wrap:wrap}
-.resource{
-  background:#36572f;
-  border:1px solid #b1c77b;
-  border-radius:22px;
-  padding:8px 15px;
-  box-shadow:inset 0 1px #ffffff35;
-  font-weight:bold;
-}
-main{max-width:1300px;margin:auto;padding:16px}
-.gameframe{
-  overflow:hidden;
-  border:5px solid #987044;
-  border-radius:17px;
-  background:#f6e9c9;
-  box-shadow:0 9px 25px #47341f35;
-}
-.scenehead{
-  padding:12px 18px;
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-  background:linear-gradient(#f9e9c6,#e8d0a0);
-  border-bottom:2px solid #b18a55;
-}
-.scenehead strong{font-size:19px}
-.scenehead span{color:#766044}
-#world{
-  display:block;
-  width:100%;
-  height:auto;
-  background:#9dbb77;
-  touch-action:manipulation;
-}
-.plot{cursor:pointer}
-.plot:hover .plot-edge{stroke:#fff1a0;stroke-width:5}
-.toolbar{
-  display:flex;
-  justify-content:center;
-  gap:9px;
-  flex-wrap:wrap;
-  padding:14px;
-  background:linear-gradient(#e9d5ad,#d7bd8b);
-  border-top:3px solid #a47b49;
-}
-.tool{
-  min-width:105px;
-  padding:9px 13px;
-  border:2px solid #a27b49;
-  border-radius:12px;
-  color:#503a21;
-  background:linear-gradient(#fff5d9,#e9ce91);
-  box-shadow:0 3px 4px #4a321c25;
-  font-weight:bold;
-}
-.tool span{display:block;font-size:23px;margin-bottom:3px}
-.tool.active{
-  background:linear-gradient(#d2e7a8,#93b96a);
-  border-color:#52783d;
-}
-.tool:hover,.action:hover{filter:brightness(1.07)}
-.info{
-  padding:11px 16px;
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-  background:#fff8e7;
-  font-size:14px;
-}
-#message{font-weight:bold;color:#58763c;min-height:20px}
-.progress{
-  width:120px;height:9px;
-  display:inline-block;
-  overflow:hidden;
-  border-radius:10px;
-  background:#ded0ad;
-  vertical-align:middle;
-}
-.progress i{
-  display:block;width:0;height:100%;
-  background:linear-gradient(90deg,#a5c76b,#547d3d);
-}
-.modalback{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:10;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-  background:#211b14bb;
-}
-.modal{
-  width:min(700px,100%);
-  max-height:85vh;
-  overflow:auto;
-  background:#fff3d7;
-  border:5px solid #a47a48;
-  border-radius:16px;
-  box-shadow:0 15px 40px #0007;
-}
-.modalhead{
-  padding:14px 18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:white;
-  background:linear-gradient(#779b50,#456b36);
-  font-size:21px;
-}
-.close{
-  width:35px;height:35px;
-  border:0;border-radius:50%;
-  background:#fff0d0;color:#503820;
-  font-size:22px;
-}
-.modalbody{padding:16px}
-.shopgrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
-  gap:11px;
-}
-.shopitem{
-  padding:13px;
-  text-align:center;
-  border:2px solid #d1b27d;
-  border-radius:12px;
-  background:#f7e9c8;
-}
-.shopitem .emoji{font-size:37px}
-.shopitem h3{margin:5px}
-.shopitem p{font-size:13px;margin:6px}
-.action{
-  padding:8px 13px;
-  border:2px solid #956b39;
-  border-radius:9px;
-  color:#513a20;
-  background:linear-gradient(#fff1c7,#e7c477);
-  font-weight:bold;
-}
-.action:disabled{opacity:.45;cursor:not-allowed}
-.notice{text-align:center;color:#806b4b;font-size:12px}
-@media(max-width:600px){
-  main{padding:6px}
-  .brand{font-size:22px}
-  .resource{font-size:12px;padding:6px 9px}
-  .tool{min-width:76px;padding:8px 5px;font-size:12px}
-  .tool span{font-size:20px}
-}
-</style>
-</head>
-<body>
-
-<header class="topbar">
-  <div class="brand">🌻 Fazenda Feliz</div>
-  <div class="resources">
-    <div class="resource">🪙 <b id="coins">250</b></div>
-    <div class="resource">⭐ Nível <b id="level">1</b></div>
-    <div class="resource">✨ XP <b id="xp">0</b></div>
-  </div>
-</header>
-
-<main>
-<section class="gameframe">
-  <div class="scenehead">
-    <strong>🏡 Minha fazenda</strong>
-    <span>Um lugar para cultivar seus sonhos</span>
-  </div>
-
-  <svg id="world" viewBox="0 0 1100 650"
-       xmlns="http://www.w3.org/2000/svg"
-       aria-label="Fazenda Feliz em perspectiva isométrica">
-
-    <defs>
-      <linearGradient id="grass" x2="0.2" y2="1">
-        <stop stop-color="#b7d58a"/>
-        <stop offset=".5" stop-color="#8eb96a"/>
-        <stop offset="1" stop-color="#6e9b50"/>
-      </linearGradient>
-      <linearGradient id="tileSide" x2="0" y2="1">
-        <stop stop-color="#9e7548"/>
-        <stop offset="1" stop-color="#69472f"/>
-      </linearGradient>
-      <linearGradient id="roof" x2=".8" y2="1">
-        <stop stop-color="#c4774d"/>
-        <stop offset="1" stop-color="#7f402f"/>
-      </linearGradient>
-      <linearGradient id="wall" x2="0" y2="1">
-        <stop stop-color="#f4dfb0"/>
-        <stop offset="1" stop-color="#cda976"/>
-      </linearGradient>
-      <radialGradient id="leaf">
-        <stop stop-color="#83b75a"/>
-        <stop offset="1" stop-color="#356c38"/>
-      </radialGradient>
-      <linearGradient id="water" x2="0" y2="1">
-        <stop stop-color="#b1d5c1"/>
-        <stop offset="1" stop-color="#579c98"/>
-      </linearGradient>
-      <pattern id="grassTexture" width="45" height="38" patternUnits="userSpaceOnUse">
-        <path d="M5 24l3 -5m5 9l2 -5m20 -12l2 -5m-7 25l3 -5"
-              stroke="#e4efb6" stroke-width="1.4" opacity=".45"/>
-        <circle cx="28" cy="20" r="1.5" fill="#507e43" opacity=".35"/>
-      </pattern>
-      <pattern id="soilTexture" width="24" height="18" patternUnits="userSpaceOnUse">
-        <path d="M3 7l7 -2m5 9l6 -2" stroke="#c69b69" stroke-width="1.5" opacity=".6"/>
-      </pattern>
-      <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
-        <feGaussianBlur stdDeviation="6"/>
-      </filter>
-    </defs>
-
-    <!-- Fundo e terreno -->
-    <rect width="1100" height="650" fill="#a9c77d"/>
-    <path d="M0 0H1100V650H0Z" fill="url(#grassTexture)" opacity=".7"/>
-
-    <!-- Base elevada da fazenda -->
-    <path d="M550 60L1050 310L550 610L50 310Z"
-          fill="#765238" opacity=".35" transform="translate(0 24)"/>
-    <path d="M550 60L1050 310L550 610L50 310Z"
-          fill="url(#tileSide)" stroke="#69472f" stroke-width="3"/>
-    <path d="M50 310L550 560L1050 310V340L550 610L50 340Z"
-          fill="#8a6240"/>
-    <path d="M550 60L1050 310L550 560L50 310Z"
-          fill="url(#grass)" stroke="#d2df9b" stroke-width="4"/>
-    <path d="M550 60L1050 310L550 560L50 310Z"
-          fill="url(#grassTexture)" opacity=".75"/>
-
-    <!-- Caminho de terra -->
-    <path d="M350 330Q410 300 485 326T650 330Q740 350 805 306"
-          fill="none" stroke="#96754f" stroke-width="55"
-          stroke-linecap="round" opacity=".75"/>
-    <path d="M350 324Q420 296 485 319T650 324Q740 344 805 300"
-          fill="none" stroke="#c7a77a" stroke-width="43"
-          stroke-linecap="round"/>
-    <path d="M350 315Q420 291 485 312T650 317Q740 336 805 293"
-          fill="none" stroke="#e0c59a" stroke-width="2"
-          stroke-dasharray="3 14" opacity=".7"/>
-
-    <!-- Lago -->
-    <ellipse cx="850" cy="200" rx="105" ry="48" fill="#4e754a" opacity=".25"/>
-    <path d="M754 190Q773 158 831 157Q908 145 945 180
-             Q970 210 923 229Q855 253 785 222Q750 210 754 190Z"
-          fill="#477f78"/>
-    <path d="M762 184Q785 157 839 162Q901 153 938 182
-             Q951 204 918 217Q854 240 790 215Q760 204 762 184Z"
-          fill="url(#water)" stroke="#d4e5bd" stroke-width="3"/>
-    <path d="M790 185q25 -10 48 -2m40 20q22 -8 43 -2"
-          fill="none" stroke="#e5f0d2" stroke-width="3" opacity=".65"/>
-
-    <!-- Árvores do cenário -->
-    <g transform="translate(170 210)">
-      <ellipse cx="0" cy="20" rx="45" ry="14" fill="#41683b" opacity=".3"/>
-      <path d="M-8 12L-6 -39L8 -39L12 12Z" fill="#79502e"/>
-      <circle cx="-15" cy="-49" r="30" fill="#356c38"/>
-      <circle cx="14" cy="-53" r="33" fill="url(#leaf)"/>
-      <circle cx="-2" cy="-75" r="27" fill="#60994a"/>
-      <circle cx="-25" cy="-53" r="13" fill="#80b65d"/>
-      <circle cx="24" cy="-43" r="15" fill="#77a951"/>
-      <circle cx="-5" cy="-83" r="9" fill="#a0c86c" opacity=".65"/>
-    </g>
-    <g transform="translate(330 145) scale(.8)">
-      <ellipse cx="0" cy="20" rx="45" ry="14" fill="#41683b" opacity=".3"/>
-      <path d="M-8 12L-6 -39L8 -39L12 12Z" fill="#79502e"/>
-      <circle cx="-15" cy="-49" r="30" fill="#356c38"/>
-      <circle cx="14" cy="-53" r="33" fill="url(#leaf)"/>
-      <circle cx="-2" cy="-75" r="27" fill="#60994a"/>
-      <circle cx="-25" cy="-53" r="13" fill="#80b65d"/>
-      <circle cx="24" cy="-43" r="15" fill="#77a951"/>
-    </g>
-    <g transform="translate(940 300) scale(1.05)">
-      <ellipse cx="0" cy="20" rx="45" ry="14" fill="#41683b" opacity=".3"/>
-      <path d="M-8 12L-6 -39L8 -39L12 12Z" fill="#79502e"/>
-      <circle cx="-15" cy="-49" r="30" fill="#356c38"/>
-      <circle cx="14" cy="-53" r="33" fill="url(#leaf)"/>
-      <circle cx="-2" cy="-75" r="27" fill="#60994a"/>
-      <circle cx="-25" cy="-53" r="13" fill="#80b65d"/>
-      <circle cx="24" cy="-43" r="15" fill="#77a951"/>
-    </g>
-
-    <!-- Casa principal -->
-    <g transform="translate(710 260)">
-      <ellipse cx="0" cy="65" rx="105" ry="25" fill="#29452c" opacity=".22"/>
-      <path d="M-78 -6L0 -47L78 -6V59L0 94L-78 59Z"
-            fill="#9c7048"/>
-      <path d="M-78 -6L0 -47V30L-78 59Z" fill="#d2ad79"/>
-      <path d="M0 -47L78 -6V59L0 30Z" fill="url(#wall)"/>
-      <path d="M-91 -8L0 -83L93 -8L77 1L0 -61L-77 1Z"
-            fill="url(#roof)" stroke="#743e30" stroke-width="3"/>
-      <path d="M0 -83L93 -8L77 1L0 -61Z" fill="#8b4935"/>
-      <path d="M-78 -8L0 -61L0 -52L-76 10Z"
-            fill="#d18a5b" opacity=".6"/>
-      <path d="M-8 39L15 29V80L-8 91Z" fill="#68452d"/>
-      <path d="M15 29L37 39V72L15 80Z" fill="#855b39"/>
-      <path d="M-59 16L-36 4V32L-59 44Z" fill="#77aeb0" stroke="#775334" stroke-width="4"/>
-      <path d="M43 6L65 17V44L43 33Z" fill="#77aeb0" stroke="#775334" stroke-width="4"/>
-      <path d="M-53 24L-42 18M49 15L59 20" stroke="#e7f0d4" stroke-width="3"/>
-      <path d="M-12 -65L-12 -87L10 -102L25 -91L25 -55"
-            fill="#9c5b3c" stroke="#713d2d" stroke-width="3"/>
-      <path d="M-12 -87L10 -102L25 -91L5 -78Z" fill="#bd7650"/>
-    </g>
-
-    <!-- Cerca de madeira -->
-    <g stroke="#e5d0a2" stroke-linecap="round">
-      <path d="M390 230L485 277M485 277L570 235"
-            fill="none" stroke-width="8"/>
-      <path d="M400 210L400 252M442 232L442 273M485 253L485 295
-               M528 253L528 274M568 214L568 253"
-            fill="none" stroke-width="7"/>
-      <path d="M390 218L485 265L570 223"
-            fill="none" stroke="#a77b4d" stroke-width="2"/>
-    </g>
-
-    <!-- Canteiros gerados pelo jogo -->
-    <g id="plots"></g>
-
-    <!-- Pequenos detalhes de vegetação -->
-    <g fill="#f3e9b3">
-      <circle cx="105" cy="310" r="3"/><circle cx="120" cy="326" r="3"/>
-      <circle cx="275" cy="260" r="3"/><circle cx="300" cy="280" r="3"/>
-      <circle cx="900" cy="400" r="3"/><circle cx="920" cy="418" r="3"/>
-      <circle cx="620" cy="460" r="3"/><circle cx="650" cy="474" r="3"/>
-    </g>
-    <g fill="#d7a6a1">
-      <circle cx="107" cy="310" r="2"/><circle cx="277" cy="260" r="2"/>
-      <circle cx="902" cy="400" r="2"/><circle cx="622" cy="460" r="2"/>
-    </g>
-
-    <!-- Placa -->
-    <g transform="translate(135 385)">
-      <path d="M0 0V53" stroke="#68452c" stroke-width="8"/>
-      <path d="M-43 -19L44 -19L35 20L-35 20Z"
-            fill="#a87542" stroke="#68452c" stroke-width="3"/>
-      <path d="M-35 -12H36" stroke="#d6b17b" stroke-width="2"/>
-      <text x="0" y="-1" text-anchor="middle"
-            font-size="13" font-weight="bold" fill="#fff1d1">MINHA</text>
-      <text x="0" y="13" text-anchor="middle"
-            font-size="13" font-weight="bold" fill="#fff1d1">FAZENDA</text>
-    </g>
-  </svg>
-
-  <div class="info">
-    <span id="message">Bem-vindo à sua fazenda! 🌻</span>
-    <span>Progresso: <span class="progress"><i id="xpbar"></i></span></span>
-  </div>
-
-  <nav class="toolbar">
-    <button class="tool active" data-mode="select" onclick="setMode('select')">
-      <span>👆</span>Selecionar
-    </button>
-    <button class="tool" data-mode="plant" onclick="setMode('plant')">
-      <span>🌱</span>Plantar
-    </button>
-    <button class="tool" data-mode="water" onclick="setMode('water')">
-      <span>💧</span>Regar
-    </button>
-    <button class="tool" data-mode="harvest" onclick="setMode('harvest')">
-      <span>🧺</span>Colher
-    </button>
-    <button class="tool" onclick="showShop()">
-      <span>🏪</span>Loja
-    </button>
-    <button class="tool" onclick="showInventory()">
-      <span>🎒</span>Inventário
-    </button>
-  </nav>
-</section>
-<p class="notice">Fazenda Feliz • Sua história começa aqui</p>
-</main>
-
-<div class="modalback" id="modalback" onclick="if(event.target===this)closeModal()">
-  <section class="modal">
-    <div class="modalhead">
-      <strong id="modalTitle">Loja</strong>
-      <button class="close" onclick="closeModal()">×</button>
-    </div>
-    <div class="modalbody" id="modalbody"></div>
-  </section>
-</div>
-
+:root{--forest:#294d32;--leaf:#527d43;--cream:#fff4d9;--wood:#8b5c35;--gold:#e9bd62}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#f3e5bf,#b9a17a);color:#453321;font-family:Trebuchet MS,Arial,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px clamp(12px,3vw,34px);background:linear-gradient(#70964e,#3e6939);color:#fff6d9;border-bottom:5px solid #294d32;box-shadow:0 4px 15px #33231855}
+.brand{font-family:Georgia,serif;font-size:clamp(23px,3vw,34px);font-weight:bold;text-shadow:2px 3px #294d32}.brand small{display:block;font:11px Arial;letter-spacing:3px;color:#e5d6a6}
+.resources{display:flex;gap:8px;flex-wrap:wrap}.res{background:#2d5636;border:1px solid #a8bf79;border-radius:24px;padding:8px 13px;font-weight:bold;box-shadow:inset 0 1px #fff4}
+main{max-width:1250px;margin:auto;padding:16px}.panel{background:#fff3d8;border:4px solid #93653b;border-radius:16px;overflow:hidden;box-shadow:0 9px 25px #402d1d40}
+.scenehead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 16px;background:linear-gradient(#f9e9c5,#e8cf9f);border-bottom:2px solid #b18a55}.scenehead strong{font: bold 20px Georgia}.scenehead span{font-size:13px;color:#766044}
+#world{display:block;width:100%;height:auto;background:#a8c17d;cursor:pointer;touch-action:manipulation}
+.toolbar{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:13px;background:linear-gradient(#f5e5c0,#dfc28c);border-top:2px solid #b18a55}
+button{font: bold 14px Trebuchet MS;cursor:pointer;border:2px solid #9b7045;border-radius:10px;padding:10px 14px;color:#50381f;background:linear-gradient(#fff4d7,#e6c58d);box-shadow:0 3px 0 #8a6139;transition:.12s}button:hover{filter:brightness(1.06);transform:translateY(-1px)}button:active{transform:translateY(2px);box-shadow:0 1px 0 #8a6139}button.active{background:linear-gradient(#a8cf79,#6c9a4e);color:#fff;border-color:#345a32;text-shadow:0 1px #345a32}button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.bottom{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-top:14px}.card{background:#fff3d8;border:2px solid #a77b4b;border-radius:13px;padding:13px;box-shadow:0 4px 12px #402d1d20}.card h3{margin:0 0 8px;font: bold 18px Georgia;color:#4b6538}.muted{font-size:13px;color:#79674e;line-height:1.45}.inventory{display:flex;gap:8px;flex-wrap:wrap}.chip{background:#f3e2bb;border:1px solid #c7a875;border-radius:20px;padding:7px 10px;font-size:13px}.progress{height:9px;background:#d8c59e;border-radius:8px;overflow:hidden;margin:8px 0}.progress i{display:block;height:100%;background:linear-gradient(90deg,#8bb95d,#4d803f);width:0}
+#toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#294d32;color:#fff4d9;padding:11px 18px;border:2px solid #d8bd79;border-radius:24px;box-shadow:0 5px 18px #0005;transition:.25s;z-index:10}#toast.show{opacity:1;transform:translate(-50%,0)}
+.modalback{display:none;position:fixed;inset:0;background:#1d2b20aa;z-index:20;align-items:center;justify-content:center;padding:16px}.modalback.open{display:flex}.modal{width:min(650px,100%);max-height:85vh;overflow:auto;background:#fff1d0;border:5px solid #8b5c35;border-radius:17px;padding:18px;box-shadow:0 15px 40px #0007}.modalhead{display:flex;justify-content:space-between;align-items:center}.modal h2{font: bold 25px Georgia;color:#4e6d3d;margin:0}.shopgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:15px}.item{background:#f8e7c2;border:1px solid #c6a16b;border-radius:12px;padding:12px}.item strong{display:block;font-size:16px;margin-bottom:5px}.item p{font-size:13px;color:#705b40;min-height:34px;margin:5px 0 10px}.item button{width:100%}
+footer{text-align:center;padding:15px;color:#68563d;font-size:12px}
+@media(max-width:650px){main{padding:8px}.bottom{grid-template-columns:1fr}.res{padding:7px 9px;font-size:13px}.toolbar button{flex:1 1 42%}}
+</style></head><body>
+<header><div class="brand">🌻 Fazenda Feliz <small>SUA HISTÓRIA COMEÇA AQUI</small></div><div class="resources"><div class="res">🪙 <span id="coins">250</span></div><div class="res">⭐ Nível <span id="level">1</span></div><div class="res">✨ <span id="xp">0</span> XP</div></div></header>
+<main><section class="panel"><div class="scenehead"><strong>🏡 Minha fazenda</strong><span id="hint">Escolha uma semente e toque em um canteiro livre para plantar.</span></div><canvas id="world" width="1000" height="650" aria-label="Fazenda interativa"></canvas><div class="toolbar">
+<button id="plantBtn" class="active">🌱 Plantar</button><button id="harvestBtn">🧺 Colher</button><button id="shopBtn">🏪 Loja</button><button id="landBtn">🌳 Expandir terreno</button><button id="saveBtn">💾 Salvar</button>
+</div></section>
+<div class="bottom"><section class="card"><h3>🌾 Sementes e colheitas</h3><div class="inventory" id="inventory"></div><p class="muted">Selecione uma semente abaixo. O tempo continua contando enquanto você joga; sua fazenda fica salva neste navegador.</p><div class="inventory" id="seedButtons"></div></section>
+<section class="card"><h3>📜 Caderno da fazenda</h3><div id="mission">Plante e colha para ganhar moedas e experiência.</div><div class="progress"><i id="xpbar"></i></div><div class="muted" id="levelText">Próximo nível: 100 XP</div><p class="muted">Dica: cada cultura tem seu próprio tempo e valor de venda. Reinvista para ampliar a fazenda!</p></section></div></main><footer>Fazenda Feliz • jogo 2D para navegador • progresso salvo neste dispositivo</footer>
+<div id="toast"></div><div class="modalback" id="modal"><div class="modal"><div class="modalhead"><h2>🏪 Loja da fazenda</h2><button id="closeShop">✕ Fechar</button></div><p class="muted">Escolha o que deseja levar para sua fazenda.</p><div class="shopgrid" id="shopItems"></div></div></div>
 <script>
-const crops={
-  trigo:{name:'Trigo',emoji:'🌾',cost:10,sell:24,time:25,xp:5},
-  cenoura:{name:'Cenoura',emoji:'🥕',cost:18,sell:42,time:40,xp:8},
-  milho:{name:'Milho',emoji:'🌽',cost:30,sell:70,time:60,xp:12},
-  morango:{name:'Morango',emoji:'🍓',cost:45,sell:105,time:90,xp:18}
-};
-
-let state={
-  coins:250,xp:0,level:1,mode:'select',seed:'trigo',
-  inventory:{trigo:5,cenoura:0,milho:0,morango:0},
-  plots:Array.from({length:6},()=>null),
-  unlocked:6
-};
-
-const plotPositions=[
-  [420,355],[520,405],[620,355],
-  [520,305],[620,255],[720,305]
+(()=>{
+const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');
+const crops=[
+{id:'wheat',name:'Trigo',emoji:'🌾',cost:8,time:18,value:19,xp:8,desc:'Rápido e fácil de cultivar.'},
+{id:'carrot',name:'Cenoura',emoji:'🥕',cost:14,time:35,value:32,xp:13,desc:'Boa para começar a lucrar.'},
+{id:'corn',name:'Milho',emoji:'🌽',cost:22,time:55,value:49,xp:18,desc:'Uma colheita mais valiosa.'},
+{id:'strawberry',name:'Morango',emoji:'🍓',cost:35,time:85,value:78,xp:26,desc:'Demora um pouco mais, rende bem.'},
+{id:'pumpkin',name:'Abóbora',emoji:'🎃',cost:48,time:120,value:108,xp:34,desc:'Uma cultura especial.'}
 ];
-
-function save(){
-  try{localStorage.setItem('fazendaFeliz_v3',JSON.stringify(state))}
-  catch(e){}
-}
-function load(){
-  try{
-    let s=JSON.parse(localStorage.getItem('fazendaFeliz_v3'));
-    if(!s){
-      const old=JSON.parse(localStorage.getItem('fazendaFeliz_v2'));
-      if(old)s=old;
-    }
-    if(s){
-      state={...state,...s};
-      state.inventory={...state.inventory,...s.inventory};
-      state.plots=Array.isArray(s.plots)?s.plots:state.plots;
-    }
-  }catch(e){}
-  while(state.plots.length<state.unlocked)state.plots.push(null);
-}
-function say(t){
-  document.getElementById('message').textContent=t;
-}
-function update(){
-  document.getElementById('coins').textContent=state.coins;
-  document.getElementById('xp').textContent=state.xp;
-  document.getElementById('level').textContent=state.level;
-  document.getElementById('xpbar').style.width=
-    (state.xp/(state.level*100)*100)+'%';
-  drawPlots();
-  save();
-}
-function setMode(m){
-  state.mode=m;
-  document.querySelectorAll('[data-mode]').forEach(b=>
-    b.classList.toggle('active',b.dataset.mode===m)
-  );
-  const messages={
-    select:'Selecione um canteiro para ver sua situação.',
-    plant:'Escolha uma semente e clique em um canteiro vazio.',
-    water:'Clique em uma plantação para regar.',
-    harvest:'Clique em uma plantação madura para colher.'
-  };
-  say(messages[m]);
-}
-function addXP(n){
-  state.xp+=n;
-  while(state.xp>=state.level*100){
-    state.xp-=state.level*100;
-    state.level++;
-    say('Parabéns! Você chegou ao nível '+state.level+'!');
-  }
-}
-function plant(i){
-  if(state.plots[i]){
-    say('Este canteiro já está ocupado.');
-    return;
-  }
-  const s=crops[state.seed];
-  if(state.inventory[state.seed]<=0){
-    say('Você não tem essa semente. Visite a loja!');
-    return;
-  }
-  state.inventory[state.seed]--;
-  state.plots[i]={type:state.seed,planted:Date.now(),watered:false};
-  say(s.name+' plantado! Aguarde crescer.');
-  update();
-}
-function water(i){
-  const p=state.plots[i];
-  if(!p){say('Não há nada plantado aqui.');return;}
-  if(p.watered){say('Esta plantação já foi regada.');return;}
-  p.watered=true;
-  p.planted-=Math.floor(crops[p.type].time*1000*.15);
-  say('Plantação regada! O crescimento foi acelerado.');
-  update();
-}
-function harvest(i){
-  const p=state.plots[i];
-  if(!p){say('Este canteiro está vazio.');return;}
-  const s=crops[p.type];
-  if(Date.now()<p.planted+s.time*1000){
-    say('Ainda está crescendo! Espere mais um pouquinho.');
-    return;
-  }
-  state.coins+=s.sell;
-  addXP(s.xp);
-  state.plots[i]=null;
-  say('Você colheu '+s.name+'! +'+s.sell+' moedas e +'+s.xp+' XP.');
-  update();
-}
-function clickPlot(i){
-  if(i>=state.unlocked)return;
-  if(state.mode==='plant')plant(i);
-  else if(state.mode==='water')water(i);
-  else if(state.mode==='harvest')harvest(i);
-  else{
-    const p=state.plots[i];
-    if(!p)say('Canteiro vazio. Escolha plantar para cultivar.');
-    else{
-      const s=crops[p.type];
-      const left=Math.max(0,Math.ceil(
-        (p.planted+s.time*1000-Date.now())/1000
-      ));
-      say(left?s.name+' crescendo. Faltam '+left+' segundos.':
-        s.name+' está pronta para colher!');
-    }
-  }
-}
-function plotMarkup(i){
-  const [x,y]=plotPositions[i%plotPositions.length];
-  return `
-  <g class="plot" data-plot="${i}" transform="translate(${x} ${y})">
-    <path d="M0 -30L64 0L0 30L-64 0Z"
-          fill="#65472e" opacity=".28" transform="translate(0 8)"/>
-    <path class="plot-edge"
-          d="M0 -30L64 0L0 30L-64 0Z"
-          fill="#9a7045" stroke="#e2c18a" stroke-width="3"/>
-    <path d="M0 -23L49 0L0 23L-49 0Z"
-          fill="#795437" stroke="#b78c5a" stroke-width="2"/>
-    <path d="M-34 -7L0 9L34 -7M-34 2L0 18L34 2"
-          fill="none" stroke="#a77b4f" stroke-width="2"/>
-    <g class="crop-art"></g>
-  </g>`;
-}
-function drawPlots(){
-  const root=document.getElementById('plots');
-  root.innerHTML='';
-  for(let i=0;i<state.unlocked;i++){
-    root.insertAdjacentHTML('beforeend',plotMarkup(i));
-    const group=root.lastElementChild;
-    const p=state.plots[i];
-    if(!p)continue;
-    const art=group.querySelector('.crop-art');
-    const s=crops[p.type];
-    const progress=Math.min(1,(Date.now()-p.planted)/(s.time*1000));
-    const ready=progress>=1;
-    const count=ready?5:Math.max(1,Math.ceil(progress*5));
-    let plants='';
-    for(let j=0;j<count;j++){
-      const px=(j%3-1)*19;
-      const py=(j>2?7:-3);
-      if(ready){
-        plants+=`
-        <g transform="translate(${px} ${py})">
-          <path d="M0 0Q-2 -12 0 -18" stroke="#3c7139" stroke-width="3" fill="none"/>
-          <ellipse cx="-6" cy="-15" rx="7" ry="4"
-                   transform="rotate(-25 -6 -15)" fill="#70a84d"/>
-          <ellipse cx="7" cy="-18" rx="7" ry="4"
-                   transform="rotate(25 7 -18)" fill="#8cbd5d"/>
-          <circle cx="0" cy="-23" r="5" fill="${
-            p.type==='morango'?'#c64d42':
-            p.type==='cenoura'?'#e48d3f':
-            p.type==='milho'?'#e6c34e':'#c6a44f'
-          }"/>
-        </g>`;
-      }else{
-        plants+=`
-        <g transform="translate(${px} ${py})">
-          <path d="M0 0Q-2 -10 0 -15" stroke="#3c7139" stroke-width="3" fill="none"/>
-          <ellipse cx="-5" cy="-12" rx="6" ry="3"
-                   transform="rotate(-25 -5 -12)" fill="#70a84d"/>
-          <ellipse cx="6" cy="-15" rx="6" ry="3"
-                   transform="rotate(25 6 -15)" fill="#8cbd5d"/>
-        </g>`;
-      }
-    }
-    art.innerHTML=plants;
-  }
-}
-function showShop(){
-  document.getElementById('modalTitle').textContent='Loja da Fazenda';
-  document.getElementById('modalbody').innerHTML=
-    '<p>Escolha sementes para sua plantação.</p><div class="shopgrid">'+
-    Object.entries(crops).map(([id,s])=>`
-      <article class="shopitem">
-        <div class="emoji">${s.emoji}</div>
-        <h3>${s.name}</h3>
-        <p>Preço: ${s.cost} moedas</p>
-        <p>Colheita: ${s.sell} moedas</p>
-        <p>Tempo: ${s.time} segundos</p>
-        <button class="action" onclick="buySeed('${id}')">Comprar 1</button>
-        <p>Estoque: ${state.inventory[id]}</p>
-      </article>`).join('')+
-    '</div><p style="text-align:center">Saldo: '+state.coins+' moedas</p>';
-  openModal();
-}
-function buySeed(id){
-  const s=crops[id];
-  if(state.coins<s.cost){say('Moedas insuficientes!');return;}
-  state.coins-=s.cost;
-  state.inventory[id]++;
-  state.seed=id;
-  update();
-  showShop();
-  say('Você comprou uma semente de '+s.name+'.');
-  setMode('plant');
-}
-function showInventory(){
-  document.getElementById('modalTitle').textContent='Inventário';
-  document.getElementById('modalbody').innerHTML=
-    '<div class="shopgrid">'+
-    Object.entries(crops).map(([id,s])=>`
-      <article class="shopitem">
-        <div class="emoji">${s.emoji}</div>
-        <h3>${s.name}</h3>
-        <p>Quantidade: <b>${state.inventory[id]}</b></p>
-        <button class="action" onclick="chooseSeed('${id}')">Selecionar</button>
-      </article>`).join('')+'</div>';
-  openModal();
-}
-function chooseSeed(id){
-  state.seed=id;
-  setMode('plant');
-  closeModal();
-  say('Semente selecionada: '+crops[id].name+'.');
-}
-function openModal(){
-  document.getElementById('modalback').style.display='flex';
-}
-function closeModal(){
-  document.getElementById('modalback').style.display='none';
-}
-document.getElementById('plots').addEventListener('click',e=>{
-  const group=e.target.closest('[data-plot]');
-  if(group)clickPlot(Number(group.dataset.plot));
-});
-
-load();
-update();
-setInterval(()=>{
-  drawPlots();
-},1000);
-setInterval(save,5000);
-</script>
-</body>
-</html>
+const initial=()=>({coins:250,xp:0,level:1,plots:{},seeds:{wheat:5,carrot:2,corn:0,strawberry:0,pumpkin:0},produce:{},chicken:0,unlocked:12,selected:'wheat',mode:'plant',trees:[]});
+let S;try{S=JSON.parse(localStorage.getItem('fazendaFelizSave'))||initial()}catch(e){S=initial()}
+if(!S.seeds)S=initial(); S.plots=S.plots||{};S.produce=S.produce||{};
+const cols=10,rows=8,tw=76,th=38,ox=500,oy=85;
+const key=(c,r)=>c+','+r;
+function unlocked(c,r){return (c>=3&&c<=6&&r>=2&&r<=4)||S.plots['land:'+key(c,r)]===true}
+function save(){localStorage.setItem('fazendaFelizSave',JSON.stringify(S));toast('Progresso salvo!')}
+function toast(t){let el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2100)}
+function iso(c,r){return{x:ox+(c-r)*tw/2,y:oy+(c+r)*th/2}}
+function diamond(x,y,w,h,fill,stroke='#ffffff55'){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke()}
+function ellipse(x,y,rx,ry,color){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
+function tree(x,y,s=1){ellipse(x+5*s,y+10*s,15*s,6*s,'#42613a');ctx.fillStyle='#80552f';ctx.fillRect(x-3*s,y-12*s,6*s,23*s);ellipse(x,y-22*s,19*s,19*s,'#477d42');ellipse(x-10*s,y-17*s,12*s,13*s,'#60934b');ellipse(x+10*s,y-15*s,11*s,13*s,'#3e713e');ellipse(x-6*s,y-29*s,5*s,5*s,'#e8bd55');ellipse(x+8*s,y-19*s,4*s,4*s,'#e8bd55')}
+function chicken(x,y){ellipse(x,y+2,11,7,'#eee4c9');ellipse(x+7,y-6,6,6,'#f5ead4');ellipse(x+12,y-5,3,2,'#d98c45');ellipse(x+6,y-13,3,3,'#c64f3c');ellipse(x+9,y-7,1.5,1.5,'#342b20');ctx.strokeStyle='#8d6339';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-3,y+8);ctx.lineTo(x-4,y+13);ctx.moveTo(x+3,y+8);ctx.lineTo(x+4,y+13);ctx.stroke()}
+function drawCrop(x,y,p){let c=crops.find(a=>a.id===p.crop)||crops[0],age=(Date.now()-p.at)/1000,stage=Math.min(3,Math.floor(age/(c.time/4)));ctx.save();ctx.translate(x,y);
+if(stage===0){ellipse(0,2,5,2,'#6e492c');ctx.strokeStyle='#5d873d';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,2);ctx.lineTo(0,-5);ctx.stroke();ellipse(-3,-3,4,2,'#79a94c');ellipse(3,-4,4,2,'#679444')}
+else {let h=9+stage*6;ctx.strokeStyle='#4b793d';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,5);ctx.lineTo(0,-h);ctx.stroke();for(let i=0;i<stage+1;i++){let yy=1-i*5;ellipse(-5,yy-2,6,3,'#75a64b');ellipse(5,yy-4,6,3,'#5d8c40')}if(stage>=2){ctx.font='17px serif';ctx.textAlign='center';ctx.fillText(c.emoji,0,-h-8)}}
+ctx.restore()}
+function draw(){ctx.clearRect(0,0,1000,650);
+let bg=ctx.createLinearGradient(0,0,0,650);bg.addColorStop(0,'#b6ce8c');bg.addColorStop(1,'#789d5b');ctx.fillStyle=bg;ctx.fillRect(0,0,1000,650);
+// distant tree line and winding path
+for(let i=0;i<16;i++){let x=i*70-10;ellipse(x,55+(i%3)*10,35,18,'#71965a');ellipse(x+10,45+(i%3)*10,25,19,'#83a866')}
+ctx.beginPath();ctx.moveTo(100,525);ctx.bezierCurveTo(280,450,340,550,510,485);ctx.bezierCurveTo(690,410,790,510,940,445);ctx.lineWidth=38;ctx.strokeStyle='#c6a878';ctx.stroke();ctx.lineWidth=3;ctx.strokeStyle='#ddc79e';ctx.stroke();
+for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){let p=iso(c,r);if(unlocked(c,r)){diamond(p.x,p.y,tw/2-1,th/2-1,'#8eaa61','#d0d79a');let plot=S.plots[key(c,r)];if(plot){diamond(p.x,p.y,tw/2-7,th/2-6,'#79583b','#b48b59');if(plot.readyAt){let crop=crops.find(a=>a.id===plot.crop);let age=(Date.now()-plot.at)/1000;drawCrop(p.x,p.y+1,plot);if(age>=crop.time){ctx.font='18px serif';ctx.textAlign='center';ctx.fillText('✨',p.x+20,p.y-23)}}else{drawCrop(p.x,p.y+1,plot)}}else{diamond(p.x,p.y,tw/2-8,th/2-7,'#a77b50','#d0a36d');ellipse(p.x-12,p.y-3,2,1,'#d7b17a');ellipse(p.x+10,p.y+4,2,1,'#d7b17a')}}else{diamond(p.x,p.y,tw/2-1,th/2-1,'#779458','#ffffff20');if((c+r)%3===0){ctx.font='15px serif';ctx.textAlign='center';ctx.fillText('🔒',p.x,p.y+5)}}}
+tree(155,260,1.25);tree(810,230,1.1);tree(880,345,.9);tree(180,430,.8);
+for(let i=0;i<S.chicken;i++){let p=iso(6,4);chicken(p.x+28+(i%3)*17,p.y-8+Math.floor(i/3)*12)}
+// farmhouse
+let fx=760,fy=110;ellipse(fx+4,fy+57,62,15,'#47623c');ctx.fillStyle='#ead7a7';ctx.fillRect(fx-42,fy+3,84,53);ctx.fillStyle='#a64f38';ctx.beginPath();ctx.moveTo(fx-54,fy+5);ctx.lineTo(fx,fy-36);ctx.lineTo(fx+54,fy+5);ctx.closePath();ctx.fill();ctx.fillStyle='#75472f';ctx.fillRect(fx-11,fy+23,22,33);ctx.fillStyle='#b9d6d1';ctx.fillRect(fx-33,fy+15,15,15);ctx.fillRect(fx+18,fy+15,15,15);ctx.fillStyle='#f3e2bd';ctx.font='bold 13px Georgia';ctx.textAlign='center';ctx.fillText('FAZENDA',fx,fy+72);
+requestAnimationFrame(draw)}
+function renderUI(){document.getElementById('coins').textContent=S.coins;document.getElementById('xp').textContent=S.xp;document.getElementById('level').textContent=S.level;document.getElementById('xpbar').style.width=(S.xp%100)+'%';document.getElementById('levelText').textContent='Próximo nível: '+(S.level*100)+' XP';document.getElementById('inventory').innerHTML=crops.map(c=>'<span class="chip">'+c.emoji+' '+c.name+': '+(S.produce[c.id]||0)+'</span>').join('')+'<span class="chip">🐔 Galinhas: '+S.chicken+'</span>';
+document.getElementById('seedButtons').innerHTML=crops.map(c=>'<button data-seed="'+c.id+'" class="'+(S.selected===c.id?'active':'')+'">'+c.emoji+' '+c.name+' ('+(S.seeds[c.id]||0)+')</button>').join('');
+document.querySelectorAll('[data-seed]').forEach(b=>b.onclick=()=>{S.selected=b.dataset.seed;S.mode='plant';modeUI();renderUI()});
+document.getElementById('mission').textContent=Object.values(S.plots).filter(p=>p&&p.crop).length?'Sua fazenda está crescendo! Continue plantando e colhendo.':'Missão: plante sua primeira semente e depois colha para ganhar moedas e XP.'}
+function modeUI(){document.getElementById('plantBtn').classList.toggle('active',S.mode==='plant');document.getElementById('harvestBtn').classList.toggle('active',S.mode==='harvest');document.getElementById('hint').textContent=S.mode==='plant'?'Escolha uma semente e toque em um canteiro livre para plantar.':'Toque nas plantações maduras para colher.'}
+canvas.addEventListener('click',e=>{let b=canvas.getBoundingClientRect(),x=(e.clientX-b.left)*1000/b.width,y=(e.clientY-b.top)*650/b.height,best=null,dist=1e9;for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){let p=iso(c,r),d=Math.hypot((x-p.x)*.8,y-p.y);if(d<dist){dist=d;best={c,r}}}if(!best||dist>34)return;let {c,r}=best,k=key(c,r);if(!unlocked(c,r)){toast('Este terreno ainda está bloqueado. Expanda a fazenda!');return}let p=S.plots[k];if(S.mode==='harvest'){if(!p){toast('Não há nada plantado aqui.');return}let crop=crops.find(a=>a.id===p.crop),age=(Date.now()-p.at)/1000;if(age<crop.time){toast('Ainda está crescendo! Aguarde mais um pouco.');return}S.coins+=crop.value;S.xp+=crop.xp;S.produce[crop.id]=(S.produce[crop.id]||0)+1;delete S.plots[k];levelCheck();renderUI();toast('Você colheu '+crop.name+'! +'+crop.value+' moedas');return}
+if(p){toast('Este canteiro já está ocupado.');return}let crop=crops.find(a=>a.id===S.selected);if((S.seeds[crop.id]||0)<1){toast('Você não tem sementes. Compre na loja!');return}if(S.coins<crop.cost){toast('Moedas insuficientes.');return}S.coins-=crop.cost;S.seeds[crop.id]--;S.plots[k]={crop:crop.id,at:Date.now()};renderUI();toast(crop.name+' plantado!')}
+);
+function levelCheck(){while(S.xp>=S.level*100){S.xp-=S.level*100;S.level++;S.coins+=50;toast('Novo nível! Você ganhou 50 moedas.')} }
+document.getElementById('plantBtn').onclick=()=>{S.mode='plant';modeUI()};document.getElementById('harvestBtn').onclick=()=>{S.mode='harvest';modeUI()};
+const modal=document.getElementById('modal');function openShop(){modal.classList.add('open');let items=[...crops.slice(1).map(c=>({name:'Sementes de '+c.name,emoji:c.emoji,desc:'Pacote com 3 sementes • crescimento '+c.time+'s',price:c.cost*3,action:()=>{if(S.coins<c.cost*3)return toast('Moedas insuficientes.');S.coins-=c.cost*3;S.seeds[c.id]=(S.seeds[c.id]||0)+3;renderUI();openShop();toast('Sementes compradas!')}})),{name:'Pintinho',emoji:'🐥',desc:'Uma galinha para alegrar sua fazenda.',price:90,action:()=>{if(S.coins<90)return toast('Moedas insuficientes.');if(S.chicken>=4)return toast('Por enquanto, limite de 4 galinhas soltas.');S.coins-=90;S.chicken++;renderUI();openShop();toast('Pintinho comprado!')}}];document.getElementById('shopItems').innerHTML=items.map((it,i)=>'<div class="item"><strong>'+it.emoji+' '+it.name+'</strong><p>'+it.desc+'</p><button data-buy="'+i+'">Comprar • 🪙 '+it.price+'</button></div>').join('');document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>items[+b.dataset.buy].action())}
+document.getElementById('shopBtn').onclick=openShop;document.getElementById('closeShop').onclick=()=>modal.classList.remove('open');modal.onclick=e=>{if(e.target===modal)modal.classList.remove('open')};
+document.getElementById('landBtn').onclick=()=>{let options=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(!unlocked(c,r)){let near=[[1,0],[-1,0],[0,1],[0,-1]].some(([dc,dr])=>unlocked(c+dc,r+dr));if(near)options.push({c,r})}if(!options.length)return toast('Toda a área disponível já foi liberada!');if(S.coins<120)return toast('Expandir custa 120 moedas.');let o=options[0];S.coins-=120;S.plots['land:'+key(o.c,o.r)]=true;renderUI();toast('Novo pedaço de terra liberado!')};
+document.getElementById('saveBtn').onclick=save;
+setInterval(()=>{renderUI()},4000);renderUI();modeUI();draw();
+})();
+</script></body></html>
