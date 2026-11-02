@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fazenda Feliz</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#e8dfc8;font-family:Georgia,serif;color:#493722}
+header{background:linear-gradient(#78a94e,#426f36);color:white;padding:13px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;box-shadow:0 3px 8px #0004}
+h1{margin:0;font-size:27px;text-shadow:1px 2px 3px #344c24}
+.stats{display:flex;gap:15px;font-size:16px;font-weight:bold}
+main{max-width:1100px;margin:auto;padding:15px}
+.panel{background:#fff8e8;border:3px solid #b88c53;border-radius:14px;box-shadow:0 4px 8px #65452230;padding:12px;margin-bottom:12px}
+#farm{position:relative;height:510px;overflow:hidden;border:5px solid #a87943;border-radius:12px;background:linear-gradient(#a8cf78 0%,#8bbd60 65%,#79a94e 100%)}
+#farm:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#d0e7a0aa,transparent 65%)}
+#farm canvas{width:100%;height:100%;display:block;position:relative}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+button{border:2px solid #9b713c;border-radius:9px;padding:10px 15px;background:linear-gradient(#fff0bd,#e9c77d);color:#51391e;font-weight:bold;font-size:14px;cursor:pointer;box-shadow:0 2px 3px #0002}
+button:hover{filter:brightness(1.06);transform:translateY(-1px)}
+button.active{background:linear-gradient(#b5db82,#78ae4b);border-color:#426f36}
+button:disabled{opacity:.45;cursor:not-allowed}
+#message{text-align:center;font-weight:bold;min-height:22px;margin-top:8px}
+#shop{display:none}
+.shopgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.item{background:#f5e8c9;border:2px solid #d0ae73;border-radius:10px;padding:12px;text-align:center}
+.item .emoji{font-size:36px}
+.item strong{display:block;margin:5px}
+.small{font-size:12px;color:#806b4b}
+footer{text-align:center;color:#79674c;font-size:12px;padding:10px}
+@media(max-width:600px){#farm{height:420px}.stats{font-size:13px}h1{font-size:22px}}
+</style>
+</head>
+<body>
+<header>
+<h1>🌻 Fazenda Feliz</h1>
+<div class="stats">
+<span>🪙 <b id="coins">250</b></span>
+<span>⭐ Nível <b id="level">1</b></span>
+<span>✨ XP <b id="xp">0</b></span>
+</div>
+</header>
+<main>
+<div class="panel">
+<div class="actions">
+<button id="plantBtn" class="active" onclick="setMode('plant')">🌱 Plantar</button>
+<button id="harvestBtn" onclick="setMode('harvest')">🧺 Colher</button>
+<button onclick="openShop()">🏪 Loja</button>
+<button onclick="expandLand()">🌳 Expandir terreno</button>
+</div>
+<div id="message">Escolha uma semente na loja e clique em um terreno para plantar!</div>
+</div>
+<div id="farm"><canvas id="scene"></canvas></div>
+<div class="panel" id="shop">
+<h3>🏪 Loja da Fazenda</h3>
+<p>Escolha suas sementes para começar a plantar.</p>
+<div class="shopgrid" id="items"></div>
+<div class="actions" style="margin-top:12px">
+<button onclick="closeShop()">Voltar para a fazenda</button>
+</div>
+</div>
+<div class="panel">
+<strong>📖 Como jogar</strong>
+<p style="margin-bottom:0">Compre sementes na loja, selecione plantar e clique em um canteiro. Aguarde o crescimento e use colher para receber moedas e XP. A fazenda salva seu progresso automaticamente neste navegador.</p>
+</div>
+</main>
+<footer>Fazenda Feliz • Um pedacinho de tranquilidade 🌻</footer>
+<script>
+const canvas=document.getElementById('scene');
+const ctx=canvas.getContext('2d');
+let coins=250,xp=0,level=1,mode='plant',selected='trigo',land=6;
+let plots=[];
+const seeds={
+trigo:{name:'Trigo',emoji:'🌾',cost:10,sell:22,time:12,xp:5},
+cenoura:{name:'Cenoura',emoji:'🥕',cost:18,sell:38,time:20,xp:8},
+milho:{name:'Milho',emoji:'🌽',cost:30,sell:65,time:30,xp:12},
+morango:{name:'Morango',emoji:'🍓',cost:45,sell:95,time:45,xp:18}
+};
+function save(){localStorage.setItem('fazendaFelizSave',JSON.stringify({coins,xp,level,land,plots}))}
+function load(){
+try{let s=JSON.parse(localStorage.getItem('fazendaFelizSave'));
+if(s){coins=s.coins??250;xp=s.xp??0;level=s.level??1;land=s.land??6;plots=s.plots??[]}
+}catch(e){}
+while(plots.length<land)plots.push(null);
+}
+function update(){
+document.getElementById('coins').textContent=coins;
+document.getElementById('xp').textContent=xp;
+document.getElementById('level').textContent=level;
+save();draw();
+}
+function say(t){document.getElementById('message').textContent=t}
+function setMode(m){
+mode=m;
+document.getElementById('plantBtn').classList.toggle('active',m==='plant');
+document.getElementById('harvestBtn').classList.toggle('active',m==='harvest');
+say(m==='plant'?'Clique em um terreno vazio para plantar.':'Clique em uma plantação pronta para colher.');
+}
+function openShop(){
+document.getElementById('shop').style.display='block';
+document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+}
+function closeShop(){document.getElementById('shop').style.display='none'}
+function renderShop(){
+document.getElementById('items').innerHTML=Object.entries(seeds).map(([id,s])=>`
+<div class="item"><div class="emoji">${s.emoji}</div><strong>${s.name}</strong>
+<div class="small">Custo: ${s.cost} moedas</div>
+<div class="small">Venda: ${s.sell} moedas</div>
+<div class="small">Tempo: ${s.time} segundos</div>
+<button onclick="buySeed('${id}')">Selecionar</button></div>`).join('');
+}
+function buySeed(id){selected=id;closeShop();setMode('plant');say('Semente selecionada: '+seeds[id].name+'. Clique em um terreno vazio.')}
+function expandLand(){
+let cost=land*100;
+if(coins<cost){say('Você precisa de '+cost+' moedas para expandir!');return}
+coins-=cost;land+=2;
+while(plots.length<land)plots.push(null);
+say('Parabéns! Você desbloqueou mais dois terrenos! 🌱');update();
+}
+function plant(i){
+if(plots[i]){say('Esse terreno já está ocupado!');return}
+let s=seeds[selected];
+if(coins<s.cost){say('Moedas insuficientes para comprar essa semente.');return}
+coins-=s.cost;
+plots[i]={type:selected,planted:Date.now()};
+say(s.name+' plantado! Agora é só esperar crescer.');
+update();
+}
+function harvest(i){
+let p=plots[i];if(!p)return;
+let s=seeds[p.type];
+if(Date.now()<p.planted+s.time*1000){say('Sua plantação ainda está crescendo! 🌱');return}
+coins+=s.sell;xp+=s.xp;plots[i]=null;
+while(xp>=level*100){xp-=level*100;level++;say('🎉 Você subiu para o nível '+level+'!')}
+say('Você colheu '+s.name+' e recebeu '+s.sell+' moedas!');
+update();
+}
+function resize(){
+let r=canvas.getBoundingClientRect();
+let d=window.devicePixelRatio||1;
+canvas.width=r.width*d;canvas.height=r.height*d;
+ctx.setTransform(d,0,0,d,0,0);draw();
+}
+function diamond(x,y,w,h,color,stroke='#ffffff55'){
+ctx.beginPath();ctx.moveTo(x,y-h/2);ctx.lineTo(x+w/2,y);ctx.lineTo(x,y+h/2);ctx.lineTo(x-w/2,y);ctx.closePath();
+ctx.fillStyle=color;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke();
+}
+function draw(){
+let w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;
+ctx.clearRect(0,0,w,h);
+ctx.fillStyle='#91bd68';ctx.fillRect(0,0,w,h);
+// árvores decorativas
+for(let i=0;i<9;i++){
+let x=(i*137+35)%w,y=45+(i%3)*48;
+ctx.fillStyle='#79532e';ctx.fillRect(x-4,y,8,24);
+ctx.fillStyle=i%2?'#4d843e':'#598f43';
+ctx.beginPath();ctx.arc(x,y,17,0,Math.PI*2);ctx.fill();
+ctx.beginPath();ctx.arc(x-10,y+7,12,0,Math.PI*2);ctx.fill();
+}
+let cols=3,rows=Math.ceil(land/cols);
+let cellW=Math.min(105,(w-45)/(cols+0.5)),cellH=cellW*.48;
+let startX=w/2,startY=Math.max(115,h*.43);
+for(let i=0;i<land;i++){
+let row=Math.floor(i/cols),col=i%cols;
+let x=startX+(col-row)*cellW*.53;
+let y=startY+(col+row)*cellH*.56;
+diamond(x,y,cellW,cellH,'#987447','#e1c18a');
+diamond(x,y-3,cellW*.91,cellH*.82,'#765638','#b99563');
+let p=plots[i];
+if(p){
+let s=seeds[p.type],ready=Date.now()>=p.planted+s.time*1000;
+let progress=Math.min(1,(Date.now()-p.planted)/(s.time*1000));
+let plants=ready?3:Math.max(1,Math.ceil(progress*3));
+for(let j=0;j<plants;j++){
+let px=x+(j-1)*cellW*.19,py=y-9+(j%2)*5;
+ctx.font=ready?'23px serif':'19px serif';
+ctx.textAlign='center';ctx.fillText(ready?s.emoji:'🌱',px,py);
+}
+if(ready){ctx.font='12px sans-serif';ctx.fillText('✨',x,y-20)}
+}
+ctx.fillStyle='#fff4d4';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+ctx.fillText(p?(seeds[p.type].name):'Terreno livre',x,y+cellH*.37);
+}
+}
+// desenho da casinha
+let hx=canvas.clientWidth*.82,hy=canvas.clientHeight*.24;
+ctx.fillStyle='#8c5a35';ctx.fillRect(hx-22,hy-2,44,30);
+ctx.fillStyle='#b75b3d';ctx.beginPath();ctx.moveTo(hx-29,hy);ctx.lineTo(hx,hy-25);ctx.lineTo(hx+29,hy);ctx.fill();
+ctx.fillStyle='#e7c68a';ctx.fillRect(hx-6,hy+10,12,18);
+}
+canvas.addEventListener('click',e=>{
+let r=canvas.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+let w=canvas.clientWidth,h=canvas.clientHeight;
+let cols=3,cellW=Math.min(105,(w-45)/(cols+0.5)),cellH=cellW*.48;
+let startX=w/2,startY=Math.max(115,h*.43),best=-1,dist=Infinity;
+for(let i=0;i<land;i++){
+let row=Math.floor(i/cols),col=i%cols;
+let x=startX+(col-row)*cellW*.53,y=startY+(col+row)*cellH*.56;
+let d=Math.abs(mx-x)/(cellW/2)+Math.abs(my-y)/(cellH/2);
+if(d<dist){dist=d;best=i}
+}
+if(best>=0&&dist<1.8){mode==='plant'?plant(best):harvest(best)}
+});
+load();renderShop();resize();
+window.addEventListener('resize',resize);
+setInterval(()=>{draw()},1000);
+setInterval(()=>{save()},5000);
+</script>
+</body>
+</html>
